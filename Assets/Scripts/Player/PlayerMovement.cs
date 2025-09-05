@@ -43,6 +43,13 @@ public class PlayerMovement : MonoBehaviour
     
     private void GetInput()
     {
+        // Check if game is active (not paused/game over)
+        if (GameManager.Instance != null && !GameManager.Instance.CanPlayerMove())
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+        
         // PC Input (Primary) - Simple like Vampire Survivors
         moveInput.x = Input.GetAxis("Horizontal");  // A/D, Arrow Left/Right
         moveInput.y = Input.GetAxis("Vertical");    // W/S, Arrow Up/Down

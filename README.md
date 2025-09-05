@@ -3,6 +3,14 @@
 ## 📖 Mô tả dự án
 Đây là một clone của game **Vampire Survivors** được phát triển bằng Unity 2022.3+. Game là một bullet hell survival roguelike với cơ chế tự động tấn công và hệ thống nâng cấp dần tiến.
 
+## 📚 Documentation
+**→ Tất cả hướng dẫn chi tiết có trong: [`Assets/Documentation/`](./Assets/Documentation/README.md)**
+
+### 🚀 Quick Start:
+1. **[Setup Unity](./Assets/Documentation/UNITY_SETUP_COMPLETE_GUIDE.md)** - Hướng dẫn setup từ đầu
+2. **[Checklist](./Assets/Documentation/UNITY_SETUP_CHECKLIST.md)** - Theo dõi tiến độ nhanh
+3. **[Player System](./Assets/Documentation/PLAYER_SETUP_GUIDE.md)** - Setup Player & UI
+
 ## 🎮 Gameplay Core Features
 - **Tự động di chuyển**: Player chỉ điều khiển movement, không có attack button
 - **Auto attack**: Weapons tự động tấn công enemies gần nhất
@@ -17,10 +25,11 @@
 ```
 Assets/Scripts/
 ├── Player/              # Logic nhân vật người chơi
-│   ├── PlayerController.cs      ✅ (Simple pause với ESC)
-│   ├── PlayerMovement.cs        ✅ (WASD + mobile virtual joystick)
-│   ├── PlayerStats.cs           📝 (Chưa implement)
-│   └── PlayerExperience.cs      📝 (Chưa implement)
+│   ├── PlayerController.cs      ✅ (Main coordinator với auto-assignment)
+│   ├── PlayerMovement.cs        ✅ (Physics-based movement với WASD + mobile)
+│   ├── PlayerStats.cs           ✅ (Health system với events)
+│   ├── PlayerExperience.cs      ✅ (XP system với progressive scaling)
+│   └── PlayerAnimationController.cs ✅ (Animation control)
 ├── Enemy/               # Logic kẻ thù
 │   ├── EnemyController.cs       📝 (Chưa implement)
 │   ├── EnemyMovement.cs         📝 (Chưa implement)
@@ -41,15 +50,18 @@ Assets/Scripts/
 │   ├── HealthPotion.cs          📝 (Chưa implement)
 │   └── PowerUp.cs               📝 (Chưa implement)
 ├── Managers/            # Quản lý hệ thống
-│   ├── GameManager.cs           📝 (Chưa implement)
-│   ├── WaveManager.cs           📝 (Chưa implement)
-│   ├── AudioManager.cs          📝 (Chưa implement)
-│   ├── ScoreManager.cs          📝 (Chưa implement)
-│   └── UpgradeManager.cs        📝 (Chưa implement)
+│   ├── GameManager.cs           ✅ (Game state, pause/resume, restart)
+│   ├── WaveManager.cs           📝 (Enemy wave progression)
+│   ├── AudioManager.cs          📝 (SFX và music)
+│   ├── ScoreManager.cs          📝 (Scoring system)
+│   └── UpgradeManager.cs        📝 (Level up upgrade choices)
 ├── UI/                  # Giao diện người dùng
-│   ├── UIManager.cs             📝 (Chưa implement)
-│   ├── HealthBar.cs             📝 (Chưa implement)
-│   ├── ExperienceBar.cs         📝 (Chưa implement)
+│   ├── ExperienceBarUI.cs       ✅ (XP bar với custom assets + DOTween)
+│   ├── ScreenSpaceHealthBar.cs  ✅ (Health bar follow player + effects)
+│   ├── SimplePlayerUIManager.cs ✅ (Single canvas UI coordinator)
+│   ├── GameOverPanel.cs         📝 (Game over UI)
+│   ├── MainMenu.cs              📝 (Menu system)
+│   └── UpgradePanel.cs          📝 (Level up upgrade choices)
 │   ├── UpgradePanel.cs          📝 (Chưa implement)
 │   ├── GameOverPanel.cs         📝 (Chưa implement)
 │   └── MainMenu.cs              📝 (Chưa implement)
@@ -139,20 +151,28 @@ Assets/
 ## 🚀 Development Status
 
 ### ✅ Hoàn thành:
-1. **Project structure** - Cấu trúc thư mục và files
-2. **Input system** - Movement cho PC và mobile
-3. **Basic player movement** - Smooth movement với acceleration
-4. **Cross-platform input** - PC keyboard + mobile virtual joystick
+1. **Project structure** - Cấu trúc thư mục và files ✅
+2. **Input system** - Movement cho PC và mobile ✅
+3. **Player system hoàn chỉnh** - PlayerController, PlayerStats, PlayerExperience ✅
+4. **Player movement** - Smooth movement với physics ✅
+5. **Health & XP systems** - Complete với events và progression ✅
+6. **UI system** - Custom asset support với DOTween animations ✅
+   - XP Bar với level up effects
+   - Health Bar follow player
+   - Single Canvas architecture
+   - Custom sprite support
+7. **Event-driven architecture** - PlayerStats, PlayerExperience events ✅
+8. **GameManager** - Game state, pause/resume, restart ✅
+9. **Code optimization** - Clean legacy code, no duplicates ✅
 
-### 📝 Cần implement tiếp:
-1. **Player Stats & Experience system**
-2. **Enemy AI và spawning system**  
-3. **Weapons auto-attack system**
-4. **Level up và upgrade system**
-5. **UI system (health bar, exp bar, upgrade panel)**
-6. **Game state management**
-7. **Audio system**
-8. **Save/Load system**
+### 📝 Đang tiếp tục:
+1. **Enemy System** - AI, spawning, health/damage
+2. **Weapon System** - Auto-attack, projectiles, upgrades
+3. **Item/Pickup System** - XP gems, health potions, power-ups
+4. **Upgrade System** - Level up choices, weapon evolution
+5. **Wave Management** - Progressive enemy difficulty
+6. **Audio System** - SFX và background music
+7. **Game Polish** - Particle effects, screen shake, juice
 
 ## 🎯 Development Approach
 - **Authentic to original**: Giữ gameplay đơn giản như Vampire Survivors
@@ -177,5 +197,7 @@ Assets/
 - **Mobile-friendly** - UI và controls phải tốt trên mobile
 
 ---
-**Last Updated**: August 29, 2025
-**Current Focus**: Implementing player stats và experience system
+**Last Updated**: September 4, 2025
+**Current Focus**: Enemy System implementation - AI, spawning, combat mechanics
+
+**Player System**: ✅ **HOÀN THÀNH 100%** - Ready for production!

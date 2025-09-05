@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
     public PlayerMovement playerMovement;
     public PlayerStats playerStats;
     public PlayerExperience playerExperience;
+    public PlayerAnimationController playerAnimation;
+    public LevelUpVFX levelUpVFX;
     
     // Simple pause handling
     public static System.Action OnPausePressed;
@@ -31,6 +33,10 @@ public class PlayerController : MonoBehaviour
             playerStats = GetComponent<PlayerStats>();
         if (playerExperience == null)
             playerExperience = GetComponent<PlayerExperience>();
+        if (playerAnimation == null)
+            playerAnimation = GetComponent<PlayerAnimationController>();
+        if (levelUpVFX == null)
+            levelUpVFX = GetComponent<LevelUpVFX>();
     }
     
     private void Start()
@@ -88,7 +94,13 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log($"Player Controller: Player reached level {newLevel}!");
         
-        // Can add level up effects here (particle effects, sound, etc.)
+        // Trigger animation
+        if (playerAnimation != null)
+        {
+            playerAnimation.TriggerLevelUpAnimation();
+        }
+        
+        // Level up VFX is handled automatically by LevelUpVFX script
     }
     
     // Public methods for external access
