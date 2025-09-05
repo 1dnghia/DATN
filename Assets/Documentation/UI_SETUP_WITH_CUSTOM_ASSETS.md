@@ -113,15 +113,15 @@ Right-click ExperienceBar → UI → Text - TextMeshPro
 Đặt tên: "LevelText"
 
 Rect Transform:
-- Anchor: Middle Center
-- Position: (0, 0, 0)
-- Width: 120, Height: 40
+- Anchor: Middle Left
+- Position: (10, 0, 0)
+- Width: 100, Height: 40
 
 TextMeshPro:
 - Text: "Level 1"
-- Font Size: 20
+- Font Size: 18
 - Color: White (hoặc màu contrast với background)
-- Alignment: Center + Middle
+- Alignment: Left + Middle
 - Font Style: Bold
 ```
 
@@ -129,11 +129,18 @@ TextMeshPro:
 ```
 Select ExperienceBar → Add Component → Experience Bar UI
 
-Script settings:
-- XP Slider: null (không dùng legacy slider)  
+⚡ Auto-Assignment: Script sẽ tự động tìm và gán:
+- XP_Fill (GameObject có tên chứa "Fill") 
+- LevelText (GameObject có tên chứa "Level")
+- XP_Background (GameObject có tên chứa "Background")
+
+Manual Assignment (nếu cần):
 - XP Fill Image: XP_Fill (drag từ Hierarchy)
 - Level Text: LevelText (drag từ Hierarchy)
 - Background Image: XP_Background (optional)
+
+Display Options:
+- Show Level Text: ✓
 
 DOTween Settings:
 - Use DOTween: ✓ (nếu có DOTween imported)
@@ -211,32 +218,17 @@ Rect Transform:
 Move xuống cuối Hierarchy để render trên top
 ```
 
-### 3.5. Thêm Health Text (Optional)
-```
-Right-click PlayerHealthBar → UI → Text - TextMeshPro
-Đặt tên: "HealthText"
-
-Rect Transform:
-- Anchor: Middle Center
-- Width: 70, Height: 15
-
-TextMeshPro:
-- Text: "100/100"
-- Font Size: 10
-- Color: White (hoặc màu contrast)
-- Alignment: Center + Middle
-- Font Style: Bold
-```
-
-### 3.6. **Add Script - ScreenSpaceHealthBar (Updated)**
+### 3.5. **Add Script - ScreenSpaceHealthBar (Updated)**
 ```
 Select PlayerHealthBar → Add Component → Screen Space Health Bar
 
+⚡ Auto-Assignment: Script sẽ tự động tìm và gán:
+- Health_Fill (GameObject có tên chứa "Fill")
+- Health_Background (GameObject có tên chứa "Background")
+
 Script settings:
 - Target: Player GameObject (drag từ Hierarchy)
-- Health Slider: null (không dùng legacy slider)
 - Health Fill Image: Health_Fill (drag từ Hierarchy)  
-- Health Text: HealthText (optional)
 - Background Image: Health_Background (optional)
 - World Offset: (0, 1.2, 0)
 
@@ -260,13 +252,12 @@ GameUI (Canvas)
 │   ├── XP_Background (Image)
 │   ├── XP_Fill (Image) - fillAmount animated by DOTween
 │   ├── XP_Frame (Image) [Optional]
-│   └── LevelText (TextMeshPro)
+│   └── LevelText (TextMeshPro) - "Level 1"
 │
 ├── PlayerHealthBar (Empty GameObject + ScreenSpaceHealthBar)
 │   ├── Health_Background (Image)
 │   ├── Health_Fill (Image) - fillAmount animated by DOTween
-│   ├── Health_Frame (Image) [Optional]
-│   └── HealthText (TextMeshPro) [Optional]
+│   └── Health_Frame (Image) [Optional]
 │
 └── [Other UI elements...]
 ```
@@ -287,19 +278,20 @@ GameUI (Canvas)
 ### 5.2. Script Assignment:
 ```
 ExperienceBar:
-- Add Component: Experience Bar UI With DOTween
-- Experience Fill Image: XP_Fill (drag from Hierarchy)
+- Add Component: Experience Bar UI
+- XP Fill Image: XP_Fill (drag from Hierarchy)
 - Level Text: LevelText (drag from Hierarchy)
 - Background Image: XP_Background (optional)
-- Frame Image: XP_Frame (optional)
+
+Display Options:
+- Show Level Text: ✓ (để hiển thị level như "Level 2")
 
 PlayerHealthBar:
-- Add Component: Screen Space Health Bar With DOTween
+- Add Component: Screen Space Health Bar
 - Target: Player GameObject (drag from Hierarchy)
 - Health Fill Image: Health_Fill (drag from Hierarchy)  
-- Health Text: HealthText (optional)
 - Background Image: Health_Background (optional)
-- Frame Image: Health_Frame (optional)
+
 ```
 
 ---

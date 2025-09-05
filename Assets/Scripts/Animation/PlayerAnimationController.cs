@@ -34,6 +34,20 @@ public class PlayerAnimationController : MonoBehaviour
             // Subscribe to damage event from EventManager
             EventManager.OnPlayerDamaged += OnPlayerDamaged;
         }
+        
+        // Check if AnimatorController is assigned
+        CheckAnimatorController();
+    }
+    
+    private void CheckAnimatorController()
+    {
+        if (animator != null && animator.runtimeAnimatorController == null)
+        {
+            // Only show warning in editor or development builds
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.LogWarning($"[{gameObject.name}] PlayerAnimationController: No AnimatorController assigned to Animator component. Animation features will be disabled until an AnimatorController is assigned.", this);
+            #endif
+        }
     }
     
     private void OnDestroy()
@@ -45,14 +59,14 @@ public class PlayerAnimationController : MonoBehaviour
     
     private void Update()
     {
-        if (isDead || animator == null) return;
+        if (isDead || animator == null || animator.runtimeAnimatorController == null) return;
         
         UpdateMovementAnimation();
     }
     
     private void UpdateMovementAnimation()
     {
-        if (playerMovement != null)
+        if (playerMovement != null && animator.runtimeAnimatorController != null)
         {
             bool isMoving = playerMovement.IsMoving();
             float speed = playerMovement.GetCurrentSpeed();
@@ -67,7 +81,7 @@ public class PlayerAnimationController : MonoBehaviour
     
     private void OnPlayerDamaged(float damage)
     {
-        if (isDead) return;
+        if (isDead || animator.runtimeAnimatorController == null) return;
         
         // Trigger hurt animation
         animator.SetTrigger(hurtTriggerHash);
@@ -81,7 +95,10 @@ public class PlayerAnimationController : MonoBehaviour
         isDead = true;
         
         // Trigger death animation
-        animator.SetTrigger(deathTriggerHash);
+        if (animator.runtimeAnimatorController != null)
+        {
+            animator.SetTrigger(deathTriggerHash);
+        }
         
         Debug.Log("Player death animation triggered!");
     }
@@ -106,12 +123,22 @@ public class PlayerAnimationController : MonoBehaviour
     [ContextMenu("Test Hurt Animation")]
     private void TestHurtAnimation()
     {
+        if (animator.runtimeAnimatorController == null)
+        {
+            Debug.LogWarning("Cannot test hurt animation: No AnimatorController assigned!");
+            return;
+        }
         OnPlayerDamaged(10f);
     }
     
     [ContextMenu("Test Death Animation")]
     private void TestDeathAnimation()
     {
+        if (animator.runtimeAnimatorController == null)
+        {
+            Debug.LogWarning("Cannot test death animation: No AnimatorController assigned!");
+            return;
+        }
         OnPlayerDeath();
     }
 }

@@ -82,22 +82,31 @@ Right-click ExperienceBar → UI → Text - TextMeshPro
 Đặt tên: "LevelText"
 
 RectTransform:
-- Anchor: Middle Center
-- Position: (0, 0, 0)
+- Anchor: Middle Left
+- Position: (10, 0, 0)
 - Size: (100, 40)
 
 TextMeshPro:
 - Text: "Level 1"
-- Font Size: 24
+- Font Size: 18
 - Color: White
-- Alignment: Center
+- Alignment: Left
 ```
 
 ### 2.6. Attach Script
 ```
 1. Add component "ExperienceBarUI" vào ExperienceBar
-2. Assign references:
-   - Experience Slider: ExperienceBar (Slider)
+
+⚡ Auto-Assignment: Script sẽ tự động tìm và gán:
+- Fill (từ Slider → Fill Area → Fill)
+- LevelText (GameObject có tên chứa "Level")
+
+Manual Assignment (nếu cần):
+- XP Fill Image: Fill (từ Slider → Fill Area → Fill)
+- Level Text: LevelText
+   
+Settings:
+- Show Level Text: ✓
    - Level Text: LevelText (TextMeshPro)
 ```
 
@@ -135,23 +144,6 @@ Fill:
 - Image color: Green (0, 1, 0, 1)
 ```
 
-### 3.5. Thêm Health Text (Optional)
-```
-Right-click PlayerHealthBar → UI → Text - TextMeshPro
-Đặt tên: "HealthText"
-
-RectTransform:
-- Anchor: Middle Center
-- Position: (0, 0, 0)
-- Size: (90, 18)
-
-TextMeshPro:
-- Text: "100/100"
-- Font Size: 12
-- Color: White
-- Alignment: Center
-```
-
 ### 3.6. Attach Script
 ```
 1. Add component "ScreenSpaceHealthBar" vào PlayerHealthBar
@@ -160,7 +152,6 @@ TextMeshPro:
    - Target: Player GameObject
    - Health Slider: PlayerHealthBar (Slider)
    - Health Fill Image: Fill (Image)
-   - Health Text: HealthText (TextMeshPro)
 ```
 
 ---
@@ -181,9 +172,8 @@ GameUI (Canvas)
 │   ├── Background (Image)
 │   ├── Fill Area
 │   │   └── Fill (Image)
-│   ├── Handle Slide Area
-│   │   └── Handle (Image) - có thể xóa
-│   └── HealthText (TextMeshPro)
+│   └── Handle Slide Area
+│       └── Handle (Image) - có thể xóa
 │
 └── [Các UI khác sẽ thêm vào đây...]
 ```

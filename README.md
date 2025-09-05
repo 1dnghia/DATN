@@ -4,12 +4,13 @@
 Đây là một clone của game **Vampire Survivors** được phát triển bằng Unity 2022.3+. Game là một bullet hell survival roguelike với cơ chế tự động tấn công và hệ thống nâng cấp dần tiến.
 
 ## 📚 Documentation
-**→ Tất cả hướng dẫn chi tiết có trong: [`Assets/Documentation/`](./Assets/Documentation/README.md)**
 
-### 🚀 Quick Start:
-1. **[Setup Unity](./Assets/Documentation/UNITY_SETUP_COMPLETE_GUIDE.md)** - Hướng dẫn setup từ đầu
-2. **[Checklist](./Assets/Documentation/UNITY_SETUP_CHECKLIST.md)** - Theo dõi tiến độ nhanh
-3. **[Player System](./Assets/Documentation/PLAYER_SETUP_GUIDE.md)** - Setup Player & UI
+### 📋 **Tiến độ & Setup:**
+1. **[UNITY_SETUP_COMPLETE_GUIDE.md](./Assets/Documentation/UNITY_SETUP_COMPLETE_GUIDE.md)** - **File tiến độ chính** - Hướng dẫn setup từ đầu và theo dõi progress
+
+### 🎨 **UI Setup:**
+2. **[UI_SETUP_WITH_CUSTOM_ASSETS.md](./Assets/Documentation/UI_SETUP_WITH_CUSTOM_ASSETS.md)** - **Setup XP bar và Health bar** với custom assets & DOTween
+3. **[SIMPLE_UI_SETUP_GUIDE.md](./Assets/Documentation/SIMPLE_UI_SETUP_GUIDE.md)** - **Setup XP bar và Health bar** đơn giản với Unity default UI
 
 ## 🎮 Gameplay Core Features
 - **Tự động di chuyển**: Player chỉ điều khiển movement, không có attack button

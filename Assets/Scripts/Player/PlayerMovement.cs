@@ -1,11 +1,16 @@
 using UnityEngine;
 
+/// <summary>
+/// Player Movement - Vampire Survivors Style
+/// - Instant acceleration/deceleration (no smoothing)
+/// - Snappy, responsive controls
+/// - 8-directional movement with diagonal normalization
+/// - Mobile touch support
+/// </summary>
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float acceleration = 10f;
-    public float deceleration = 10f;
     
     [Header("Components")]
     private Rigidbody2D rb;
@@ -13,7 +18,6 @@ public class PlayerMovement : MonoBehaviour
     
     // Input
     private Vector2 moveInput;
-    private Vector2 currentVelocity;
     
     private void Awake()
     {
@@ -26,8 +30,6 @@ public class PlayerMovement : MonoBehaviour
         // Called when Reset is pressed in Unity Inspector
         // Set default values
         moveSpeed = 5f;
-        acceleration = 10f;
-        deceleration = 10f;
     }
     
     private void Update()
@@ -76,20 +78,10 @@ public class PlayerMovement : MonoBehaviour
             finalMoveSpeed *= playerStats.moveSpeedMultiplier;
         }
         
-        // Target velocity
+        // Direct velocity assignment - instant movement like Vampire Survivors
+        // No acceleration/deceleration for snappy, responsive controls
         Vector2 targetVelocity = moveInput * finalMoveSpeed;
-        
-        // Smooth acceleration/deceleration
-        float accelRate = (moveInput.magnitude > 0) ? acceleration : deceleration;
-        
-        currentVelocity = Vector2.MoveTowards(
-            currentVelocity, 
-            targetVelocity, 
-            accelRate * Time.fixedDeltaTime
-        );
-        
-        // Apply movement
-        rb.linearVelocity = currentVelocity;
+        rb.linearVelocity = targetVelocity;
     }
     
     private void FlipSprite()
@@ -108,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
     // Public getters
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetMoveDirection() => moveInput;
-    public float GetCurrentSpeed() => currentVelocity.magnitude;
+    public float GetCurrentSpeed() => rb.linearVelocity.magnitude;
     public bool IsMoving() => moveInput.magnitude > 0.1f;
     public float GetFinalMoveSpeed() 
     { 

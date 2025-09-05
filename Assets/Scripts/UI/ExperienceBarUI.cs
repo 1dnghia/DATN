@@ -10,19 +10,14 @@ public class ExperienceBarUI : MonoBehaviour
 {
     [Header("Experience Bar Components")]
     public Image xpFillImage; // Primary - for custom assets with fillAmount
-    public TextMeshProUGUI xpText;
     public TextMeshProUGUI levelText;
     public Image backgroundImage;
     
     [Header("Visual Settings")]
-    public Color xpColor = new Color(0f, 0.8f, 1f); // Cyan
-    public Color xpGlowColor = Color.white;
-    public Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
+    public Color xpGlowColor = Color.white; // For level up effects only
     
     [Header("Display Options")]
-    public bool showXPNumbers = true;
     public bool showLevelText = true;
-    public bool fullWidthBar = true;
     
     [Header("Animation")]
     public bool animateXPChanges = true;
@@ -68,29 +63,10 @@ public class ExperienceBarUI : MonoBehaviour
         PlayerExperience.OnExperienceChanged += UpdateXPDisplay;
         PlayerExperience.OnLevelUp += OnLevelUp;
         
-        // Store original colors
+        // Store original colors (don't override user settings)
         if (xpFillImage != null)
         {
             originalFillColor = xpFillImage.color;
-        }
-        
-        // Set initial XP color
-        if (xpFillImage != null)
-        {
-            xpFillImage.color = xpColor;
-            originalFillColor = xpColor;
-        }
-        
-        // Set background color
-        if (backgroundImage != null)
-        {
-            backgroundImage.color = backgroundColor;
-        }
-        
-        // Hide XP numbers if disabled
-        if (!showXPNumbers && xpText != null)
-        {
-            xpText.gameObject.SetActive(false);
         }
         
         // Hide level text if disabled
@@ -99,11 +75,8 @@ public class ExperienceBarUI : MonoBehaviour
             levelText.gameObject.SetActive(false);
         }
         
-        // Setup full width layout if enabled
-        if (fullWidthBar)
-        {
-            SetupFullWidthLayout();
-        }
+        // Initialize XP display with current player data
+        InitializeXPDisplay();
     }
     
     /// <summary>
@@ -125,7 +98,34 @@ public class ExperienceBarUI : MonoBehaviour
         }
         
         UpdateLevelText();
-        UpdateXPText();
+    }
+    
+    /// <summary>
+    /// Initialize XP display with current player data at start
+    /// </summary>
+    private void InitializeXPDisplay()
+    {
+        PlayerExperience playerExp = FindFirstObjectByType<PlayerExperience>();
+        if (playerExp != null)
+        {
+            // Get current values from player
+            float currentXP = playerExp.currentExperience;
+            float requiredXP = playerExp.ExperienceRequired;
+            int level = playerExp.Level;
+            
+            // Set values without animation
+            SetXPImmediate(currentXP, requiredXP, level);
+            
+            #if UNITY_EDITOR
+            Debug.Log($"[ExperienceBarUI] Initialized: {currentXP:F0}/{requiredXP:F0} XP, Level {level}");
+            #endif
+        }
+        else
+        {
+            #if UNITY_EDITOR
+            Debug.LogWarning("[ExperienceBarUI] PlayerExperience not found during initialization!");
+            #endif
+        }
     }
     
     private void OnDestroy()
@@ -161,8 +161,6 @@ public class ExperienceBarUI : MonoBehaviour
             {
                 xpFillImage.fillAmount = progress;
             }
-            
-            UpdateXPText();
         }
         else if (!animateXPChanges)
         {
@@ -192,6 +190,10 @@ public class ExperienceBarUI : MonoBehaviour
         float targetProgress = maxXP > 0 ? targetXP / maxXP : 0f;
         targetProgress = Mathf.Clamp01(targetProgress);
         
+        #if UNITY_EDITOR
+        Debug.Log($"[ExperienceBarUI] Updating XP: {currentXP:F0}/{requiredXP:F0} ({targetProgress:P1}) Level {currentLevel}");
+        #endif
+        
         #if DOTWEEN_ENABLED
         // Use DOTween if available and enabled
         if (isDOTweenAvailable && useDOTween)
@@ -201,7 +203,8 @@ public class ExperienceBarUI : MonoBehaviour
         else
         #endif
         {
-            // Fallback to immediate update or legacy lerp
+            // Fallback: Let Update() handle animation if animateXPChanges is true
+            // Or update immediately if animateXPChanges is false
             if (!animateXPChanges)
             {
                 currentDisplayXP = targetXP;
@@ -210,10 +213,10 @@ public class ExperienceBarUI : MonoBehaviour
                     xpFillImage.fillAmount = targetProgress;
                 }
             }
+            // If animateXPChanges is true, Update() method will handle the smooth transition
         }
         
         UpdateLevelText();
-        UpdateXPText();
     }
     
     #if DOTWEEN_ENABLED
@@ -240,14 +243,6 @@ public class ExperienceBarUI : MonoBehaviour
         if (levelText != null && showLevelText)
         {
             levelText.text = $"Level {currentLevel}";
-        }
-    }
-    
-    private void UpdateXPText()
-    {
-        if (xpText != null && showXPNumbers)
-        {
-            xpText.text = $"{Mathf.RoundToInt(currentDisplayXP)}/{Mathf.RoundToInt(maxXP)} XP";
         }
     }
     
@@ -322,25 +317,13 @@ public class ExperienceBarUI : MonoBehaviour
         }
     }
     
-    private void SetupFullWidthLayout()
-    {
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        if (rectTransform != null)
-        {
-            // Set to stretch full width
-            rectTransform.anchorMin = new Vector2(0, 1);
-            rectTransform.anchorMax = new Vector2(1, 1);
-            rectTransform.anchoredPosition = new Vector2(0, -30);
-            rectTransform.sizeDelta = new Vector2(0, 40);
-        }
-    }
-    
     private void Reset()
     {
-        // Auto-assign components when script is first added
+        // Auto-assign components when script is first added or Reset is pressed
+        
+        // Auto-find XP Fill Image (XP_Fill, Fill, etc.)
         if (xpFillImage == null)
         {
-            // Look for child Image with "Fill" in name
             Image[] images = GetComponentsInChildren<Image>();
             foreach (Image img in images)
             {
@@ -352,9 +335,9 @@ public class ExperienceBarUI : MonoBehaviour
             }
         }
         
+        // Auto-find Level Text (LevelText, Level, etc.)
         if (levelText == null)
         {
-            // Look for child TextMeshPro with "Level" in name
             TextMeshProUGUI[] texts = GetComponentsInChildren<TextMeshProUGUI>();
             foreach (TextMeshProUGUI text in texts)
             {
@@ -366,9 +349,9 @@ public class ExperienceBarUI : MonoBehaviour
             }
         }
         
+        // Auto-find Background Image (XP_Background, Background, etc.)
         if (backgroundImage == null)
         {
-            // Look for child Image with "Background" in name
             Image[] images = GetComponentsInChildren<Image>();
             foreach (Image img in images)
             {
@@ -379,6 +362,16 @@ public class ExperienceBarUI : MonoBehaviour
                 }
             }
         }
+        
+        #if UNITY_EDITOR
+        if (xpFillImage != null || levelText != null || backgroundImage != null)
+        {
+            UnityEngine.Debug.Log($"[ExperienceBarUI] Auto-assigned components on {gameObject.name}:");
+            if (xpFillImage != null) UnityEngine.Debug.Log($"  ✅ XP Fill: {xpFillImage.gameObject.name}");
+            if (levelText != null) UnityEngine.Debug.Log($"  ✅ Level Text: {levelText.gameObject.name}");
+            if (backgroundImage != null) UnityEngine.Debug.Log($"  ✅ Background: {backgroundImage.gameObject.name}");
+        }
+        #endif
     }
     
     [ContextMenu("Test Level Up")]

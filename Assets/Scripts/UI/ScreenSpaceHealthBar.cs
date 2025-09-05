@@ -11,7 +11,6 @@ public class ScreenSpaceHealthBar : MonoBehaviour
     [Header("Health Bar Components")]
     public Transform target; // Player to follow
     public Image healthFillImage; // Primary - for custom assets with fillAmount
-    public TextMeshProUGUI healthText;
     public Image backgroundImage;
     
     [Header("Positioning")]
@@ -100,7 +99,6 @@ public class ScreenSpaceHealthBar : MonoBehaviour
             
             // Set initial health bar
             UpdateHealthBar();
-            UpdateHealthText(targetHealth, maxHealth);
         }
     }
     
@@ -136,7 +134,6 @@ public class ScreenSpaceHealthBar : MonoBehaviour
                 currentDisplayHealth = Mathf.Lerp(currentDisplayHealth, targetHealth, 
                     Time.unscaledDeltaTime * animationSpeed);
                 UpdateHealthBar();
-                UpdateHealthText(currentDisplayHealth, maxHealth);
             }
         }
     }
@@ -180,8 +177,6 @@ public class ScreenSpaceHealthBar : MonoBehaviour
                 UpdateHealthBar();
             }
         }
-        
-        UpdateHealthText(currentHealth, maximumHealth);
         
         // Trigger damage shake effect
         if (currentHealth < previousHealth && enableDamageShake)
@@ -287,14 +282,6 @@ public class ScreenSpaceHealthBar : MonoBehaviour
         }
     }
     
-    private void UpdateHealthText(float currentHealth, float maxHealth)
-    {
-        if (healthText != null)
-        {
-            healthText.text = $"{Mathf.RoundToInt(currentHealth)}/{Mathf.RoundToInt(maxHealth)}";
-        }
-    }
-    
     private void Reset()
     {
         // Auto-assign components when script is first added
@@ -307,20 +294,6 @@ public class ScreenSpaceHealthBar : MonoBehaviour
                 if (img.gameObject.name.Contains("Fill"))
                 {
                     healthFillImage = img;
-                    break;
-                }
-            }
-        }
-        
-        if (healthText == null)
-        {
-            // Look for child TextMeshPro with "Health" in name
-            TextMeshProUGUI[] texts = GetComponentsInChildren<TextMeshProUGUI>();
-            foreach (TextMeshProUGUI text in texts)
-            {
-                if (text.gameObject.name.Contains("Health"))
-                {
-                    healthText = text;
                     break;
                 }
             }
