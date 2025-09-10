@@ -102,7 +102,7 @@ public class PlayerAnimationController : MonoBehaviour
     
     private void OnPlayerDamaged(float damage)
     {
-        if (isDead || animator.runtimeAnimatorController == null) return;
+        if (isDead || animator == null || animator.runtimeAnimatorController == null) return;
         
         // Trigger hurt animation
         animator.SetTrigger(hurtTriggerHash);
