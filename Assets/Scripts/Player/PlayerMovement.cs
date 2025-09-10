@@ -21,8 +21,37 @@ public class PlayerMovement : MonoBehaviour
     
     private void Awake()
     {
+        // Try to find Rigidbody2D on same GameObject first (old structure)
         rb = GetComponent<Rigidbody2D>();
+        
+        // If not found, try to find on parent (new structure)
+        if (rb == null)
+        {
+            rb = GetComponentInParent<Rigidbody2D>();
+        }
+        
+        // Try to find PlayerStats on same GameObject first (old structure)
         playerStats = GetComponent<PlayerStats>();
+        
+        // If not found, try to find in siblings or parent hierarchy (new structure)
+        if (playerStats == null)
+        {
+            // First try parent
+            playerStats = GetComponentInParent<PlayerStats>();
+            // If still not found, try in children of parent (sibling components)
+            if (playerStats == null && transform.parent != null)
+            {
+                playerStats = transform.parent.GetComponentInChildren<PlayerStats>();
+            }
+        }
+        
+        #if UNITY_EDITOR
+        // Debug log for structure detection
+        bool isNewStructure = GetComponent<Rigidbody2D>() == null;
+        Debug.Log($"[PlayerMovement] Using {(isNewStructure ? "NEW" : "OLD")} structure on {gameObject.name}");
+        if (rb == null) Debug.LogError($"[PlayerMovement] Rigidbody2D not found on {gameObject.name} or parent!");
+        if (playerStats == null) Debug.LogWarning($"[PlayerMovement] PlayerStats not found for {gameObject.name}");
+        #endif
     }
     
     private void Reset()
@@ -71,6 +100,13 @@ public class PlayerMovement : MonoBehaviour
     
     private void Move()
     {
+        // Safety check for Rigidbody2D
+        if (rb == null)
+        {
+            Debug.LogError($"[PlayerMovement] Rigidbody2D is null on {gameObject.name}! Cannot move.");
+            return;
+        }
+        
         // Get final move speed with multipliers
         float finalMoveSpeed = moveSpeed;
         if (playerStats != null)
@@ -86,21 +122,50 @@ public class PlayerMovement : MonoBehaviour
     
     private void FlipSprite()
     {
-        // Flip sprite based on movement direction
+        // In new structure, we need to flip the PlayerSprite, not the PlayerMovement GameObject
+        // Try to find PlayerSprite in siblings (under PlayerVisual)
+        Transform playerSprite = null;
+        
+        // First try to find PlayerSprite directly
+        if (transform.parent != null)
+        {
+            // Look for PlayerSprite in PlayerVisual (sibling)
+            Transform playerVisual = transform.parent.Find("PlayerVisual");
+            if (playerVisual != null)
+            {
+                playerSprite = playerVisual.Find("PlayerSprite");
+            }
+            
+            // If not found, try direct search in parent's children
+            if (playerSprite == null)
+            {
+                playerSprite = transform.parent.Find("PlayerSprite");
+            }
+        }
+        
+        // If still not found, try old structure (PlayerSprite as child of this object)
+        if (playerSprite == null)
+        {
+            playerSprite = transform.Find("PlayerSprite");
+        }
+        
+        // Apply flip to the correct transform
+        Transform targetTransform = playerSprite != null ? playerSprite : transform;
+        
         if (moveInput.x > 0.1f)
         {
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            targetTransform.localScale = new Vector3(1f, 1f, 1f);
         }
         else if (moveInput.x < -0.1f)
         {
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            targetTransform.localScale = new Vector3(-1f, 1f, 1f);
         }
     }
     
     // Public getters
     public Vector2 GetMoveInput() => moveInput;
     public Vector2 GetMoveDirection() => moveInput;
-    public float GetCurrentSpeed() => rb.linearVelocity.magnitude;
+    public float GetCurrentSpeed() => rb != null ? rb.linearVelocity.magnitude : 0f;
     public bool IsMoving() => moveInput.magnitude > 0.1f;
     public float GetFinalMoveSpeed() 
     { 

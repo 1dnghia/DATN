@@ -27,16 +27,58 @@ public class PlayerController : MonoBehaviour
     
     private void AutoAssignComponents()
     {
+        // First try to get from same GameObject (old structure compatibility)
         if (playerMovement == null) 
+        {
             playerMovement = GetComponent<PlayerMovement>();
+            // If not found, try in children (new structure)
+            if (playerMovement == null)
+                playerMovement = GetComponentInChildren<PlayerMovement>();
+        }
+        
         if (playerStats == null)
+        {
             playerStats = GetComponent<PlayerStats>();
+            if (playerStats == null)
+                playerStats = GetComponentInChildren<PlayerStats>();
+        }
+        
         if (playerExperience == null)
+        {
             playerExperience = GetComponent<PlayerExperience>();
+            if (playerExperience == null)
+                playerExperience = GetComponentInChildren<PlayerExperience>();
+        }
+        
         if (playerAnimation == null)
+        {
             playerAnimation = GetComponent<PlayerAnimationController>();
+            if (playerAnimation == null)
+                playerAnimation = GetComponentInChildren<PlayerAnimationController>();
+        }
+        
         if (levelUpVFX == null)
+        {
             levelUpVFX = GetComponent<LevelUpVFX>();
+            if (levelUpVFX == null)
+                levelUpVFX = GetComponentInChildren<LevelUpVFX>();
+        }
+        
+        #if UNITY_EDITOR
+        // Debug log to show which structure is being used
+        bool isOldStructure = GetComponent<PlayerMovement>() != null;
+        Debug.Log($"[PlayerController] Using {(isOldStructure ? "OLD" : "NEW")} structure");
+        #endif
+    }
+    
+    /// <summary>
+    /// Public method to refresh component references after restructuring
+    /// Can be called by PlayerRestructureHelper or other external scripts
+    /// </summary>
+    public void RefreshComponentReferences()
+    {
+        AutoAssignComponents();
+        Debug.Log("[PlayerController] Component references refreshed!");
     }
     
     private void Start()

@@ -116,9 +116,9 @@ public class ScreenSpaceHealthBar : MonoBehaviour
         #endif
     }
     
-    private void Update()
+    private void LateUpdate()
     {
-        // Update position to follow target
+        // Update position to follow target - AFTER camera updates
         if (followTarget && target != null)
         {
             UpdateScreenPosition();

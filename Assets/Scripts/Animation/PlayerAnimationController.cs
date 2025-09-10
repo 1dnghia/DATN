@@ -21,8 +21,29 @@ public class PlayerAnimationController : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        
+        // Try to get components from same GameObject first (old structure)
         playerMovement = GetComponent<PlayerMovement>();
         playerStats = GetComponent<PlayerStats>();
+        
+        // If not found, try from parent (new structure)
+        if (playerMovement == null || playerStats == null)
+        {
+            PlayerController controller = GetComponentInParent<PlayerController>();
+            if (controller != null)
+            {
+                if (playerMovement == null)
+                    playerMovement = controller.playerMovement;
+                if (playerStats == null)
+                    playerStats = controller.playerStats;
+            }
+        }
+        
+        #if UNITY_EDITOR
+        // Debug log for structure detection
+        bool isNewStructure = GetComponent<PlayerMovement>() == null;
+        Debug.Log($"[PlayerAnimationController] Using {(isNewStructure ? "NEW" : "OLD")} structure on {gameObject.name}");
+        #endif
     }
     
     private void Start()
