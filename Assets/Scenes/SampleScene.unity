@@ -194,6 +194,65 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 311613708}
   m_CullTransparentMesh: 1
+--- !u!1 &344182416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 344182418}
+  - component: {fileID: 344182417}
+  m_Layer: 0
+  m_Name: EnemySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &344182417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344182416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f63a112f03ffb54d93adbe370ad1331, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnRate: 2
+  maxEnemies: 50
+  spawnDistance: 12
+  despawnDistance: 20
+  minSpawnRadius: 10
+  maxSpawnRadius: 15
+  enemyTypes:
+  - {fileID: 11400000, guid: 083921418419b164aa4a54b5d7e131b6, type: 2}
+  spawnWeights:
+  - 1
+  enableDifficultyScaling: 1
+  difficultyIncreaseRate: 0.1
+  maxDifficultyMultiplier: 5
+  showSpawnGizmos: 1
+  logSpawning: 1
+--- !u!4 &344182418
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344182416}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &501239765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1654,3 +1713,4 @@ SceneRoots:
   - {fileID: 725847713}
   - {fileID: 1091814010}
   - {fileID: 634394517}
+  - {fileID: 344182418}

@@ -18,12 +18,3 @@ public class WaveConfig
     public float endTime;
     public EnemySpawnData[] enemies;
 }
-
-[System.Serializable]
-public class EnemySpawnData
-{
-    public EnemyData enemyData;
-    public float spawnRate;
-    public int maxCount;
-    public float spawnWeight;
-}

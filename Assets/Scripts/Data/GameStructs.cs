@@ -32,3 +32,25 @@ public struct EnemyStatsData
     public float experienceValue;
     public float spawnWeight;
 }
+
+[System.Serializable]
+public struct EnemySpawnData
+{
+    [Header("Enemy Type")]
+    public EnemyData enemyData;
+    
+    [Header("Spawn Settings")]
+    public int minCount;
+    public int maxCount;
+    public float spawnRate;
+    public float spawnWeight;
+    
+    [Header("Timing")]
+    public float startDelay;
+    public float endTime; // When to stop spawning this enemy type (0 = never stop)
+    
+    [Header("Scaling")]
+    public float healthScale;
+    public float damageScale;
+    public float speedScale;
+}
