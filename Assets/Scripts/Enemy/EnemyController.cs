@@ -54,9 +54,9 @@ public class EnemyController : MonoBehaviour
         }
         
         #if UNITY_EDITOR
-        if (enemyStats == null) Debug.LogError($"[EnemyController] EnemyStats not found on {gameObject.name}!");
-        if (enemyMovement == null) Debug.LogError($"[EnemyController] EnemyMovement not found on {gameObject.name}!");
-        if (player == null) Debug.LogWarning($"[EnemyController] Player not found for {gameObject.name}!");
+        #if UNITY_EDITOR
+        // Component validation removed for cleaner console output
+        #endif
         #endif
     }
     

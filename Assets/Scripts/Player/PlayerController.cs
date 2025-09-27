@@ -63,12 +63,6 @@ public class PlayerController : MonoBehaviour
             if (levelUpVFX == null)
                 levelUpVFX = GetComponentInChildren<LevelUpVFX>();
         }
-        
-        #if UNITY_EDITOR
-        // Debug log to show which structure is being used
-        bool isOldStructure = GetComponent<PlayerMovement>() != null;
-        Debug.Log($"[PlayerController] Using {(isOldStructure ? "OLD" : "NEW")} structure");
-        #endif
     }
     
     /// <summary>
@@ -78,7 +72,6 @@ public class PlayerController : MonoBehaviour
     public void RefreshComponentReferences()
     {
         AutoAssignComponents();
-        Debug.Log("[PlayerController] Component references refreshed!");
     }
     
     private void Start()
@@ -122,7 +115,6 @@ public class PlayerController : MonoBehaviour
     
     private void OnPlayerDeath()
     {
-        Debug.Log("Player Controller: Player died!");
         // Disable movement
         if (playerMovement != null)
         {
@@ -134,8 +126,6 @@ public class PlayerController : MonoBehaviour
     
     private void OnLevelUp(int newLevel)
     {
-        Debug.Log($"Player Controller: Player reached level {newLevel}!");
-        
         // Trigger animation
         if (playerAnimation != null)
         {

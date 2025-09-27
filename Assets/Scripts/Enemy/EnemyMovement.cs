@@ -44,8 +44,9 @@ public class EnemyMovement : MonoBehaviour
         }
         
         #if UNITY_EDITOR
-        if (rb == null) Debug.LogError($"[EnemyMovement] Rigidbody2D not found on {gameObject.name}!");
-        if (player == null) Debug.LogWarning($"[EnemyMovement] Player not found for {gameObject.name}!");
+        #if UNITY_EDITOR
+        // Component validation removed for cleaner console output
+        #endif
         #endif
     }
     

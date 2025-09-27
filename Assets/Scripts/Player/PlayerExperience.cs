@@ -84,14 +84,6 @@ public class PlayerExperience : MonoBehaviour
         
         // Open upgrade panel
         EventManager.OnUpgradePanelOpen?.Invoke();
-        
-        // Debug logging to verify progression
-        #if UNITY_EDITOR
-        Debug.Log($"🎉 LEVEL UP! {oldLevel} → {currentLevel}");
-        Debug.Log($"Previous level needed: {oldXPRequired:F0} XP");
-        Debug.Log($"Current level XP requirement: {newXPRequired:F0} XP (Increase: +{(newXPRequired - oldXPRequired):F0})");
-        Debug.Log($"Remaining XP: {currentExperience:F0}/{newXPRequired:F0}");
-        #endif
     }
     
     // Calculate experience required for a specific level
@@ -152,23 +144,17 @@ public class PlayerExperience : MonoBehaviour
     [ContextMenu("Show XP Table (Next 5 Levels)")]
     private void DebugShowXPTable()
     {
-        Debug.Log("=== XP Requirements Table ===");
-        Debug.Log($"Current Level: {currentLevel} | Current XP: {currentExperience:F0}");
-        Debug.Log("Level | XP Needed | Total XP | Cumulative");
-        
         for (int i = currentLevel; i <= currentLevel + 5; i++)
         {
             float xpForThisLevel = GetExperienceRequiredForLevel(i + 1); // XP needed to go from level i to i+1
             float totalXP = GetTotalExperienceForLevel(i + 1);
             string marker = (i == currentLevel) ? " ← CURRENT" : "";
-            Debug.Log($"  {i}→{i+1} |  {xpForThisLevel:F0} XP   |  {totalXP:F0} XP  {marker}");
         }
     }
     
     [ContextMenu("Test Level Progression")]
     private void DebugTestProgression()
     {
-        Debug.Log("=== Testing Level Progression ===");
         // Reset to level 1 for clean test
         currentLevel = 1;
         currentExperience = 0f;
@@ -178,12 +164,9 @@ public class PlayerExperience : MonoBehaviour
         for (int i = 1; i <= 5; i++)
         {
             float xpNeeded = ExperienceRequired;
-            Debug.Log($"Level {currentLevel}: Current XP Requirement = {xpNeeded:F0} XP to reach Level {currentLevel + 1}");
             
             // Give exact XP needed
             GainExperience(xpNeeded);
-            Debug.Log($"After level up: Now Level {currentLevel}, new XP requirement = {ExperienceRequired:F0} XP for next level");
-            Debug.Log("---");
         }
     }
     

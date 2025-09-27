@@ -84,8 +84,6 @@ public class LevelUpVFX : MonoBehaviour
     
     private IEnumerator PlayLevelUpEffects(int newLevel)
     {
-        Debug.Log($"🎉 Level Up VFX triggered for Level {newLevel}!");
-        
         // Play particle effects
         PlayParticleEffects();
         

@@ -8,7 +8,7 @@ public class PlayerAnimationController : MonoBehaviour
     private PlayerStats playerStats;
     
     [Header("Animation Parameters")]
-    private readonly int isWalkingHash = Animator.StringToHash("IsWalking");
+    private readonly int isRunningHash = Animator.StringToHash("IsRunning");
     private readonly int hurtTriggerHash = Animator.StringToHash("HurtTrigger");
     private readonly int deathTriggerHash = Animator.StringToHash("DeathTrigger");
     private readonly int speedHash = Animator.StringToHash("Speed");
@@ -20,15 +20,28 @@ public class PlayerAnimationController : MonoBehaviour
     
     private void Awake()
     {
+        // Try to get Animator component - first on same GameObject, then parent
         animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            animator = GetComponentInParent<Animator>();
+        }
+        
+        // If still not found, try to add it to same GameObject
+        if (animator == null)
+        {
+            Debug.LogWarning($"[PlayerAnimationController] No Animator found on {gameObject.name} or parent. Adding Animator component to this GameObject...");
+            animator = gameObject.AddComponent<Animator>();
+        }
         
         // Try to get components from same GameObject first (old structure)
         playerMovement = GetComponent<PlayerMovement>();
         playerStats = GetComponent<PlayerStats>();
         
-        // If not found, try from parent (new structure)
+        // If not found, try from parent hierarchy (new structure)
         if (playerMovement == null || playerStats == null)
         {
+            // Method 1: Try direct parent PlayerController
             PlayerController controller = GetComponentInParent<PlayerController>();
             if (controller != null)
             {
@@ -37,12 +50,27 @@ public class PlayerAnimationController : MonoBehaviour
                 if (playerStats == null)
                     playerStats = controller.playerStats;
             }
+            
+            // Method 2: If still not found, search in parent hierarchy
+            if (playerMovement == null)
+                playerMovement = GetComponentInParent<PlayerMovement>();
+            if (playerStats == null)
+                playerStats = GetComponentInParent<PlayerStats>();
+                
+            // Method 3: If still not found, try siblings (other children of parent)
+            if (playerMovement == null && transform.parent != null)
+                playerMovement = transform.parent.GetComponentInChildren<PlayerMovement>();
+            if (playerStats == null && transform.parent != null)
+                playerStats = transform.parent.GetComponentInChildren<PlayerStats>();
         }
         
         #if UNITY_EDITOR
-        // Debug log for structure detection
+        // Debug log for structure detection in editor only
         bool isNewStructure = GetComponent<PlayerMovement>() == null;
-        Debug.Log($"[PlayerAnimationController] Using {(isNewStructure ? "NEW" : "OLD")} structure on {gameObject.name}");
+        if (playerMovement == null || playerStats == null)
+        {
+            Debug.LogWarning($"[PlayerAnimationController] Missing components on {gameObject.name} - PlayerMovement: {playerMovement != null}, PlayerStats: {playerStats != null}");
+        }
         #endif
     }
     
@@ -71,6 +99,20 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// Check if animator parameter exists to avoid errors
+    /// </summary>
+    private bool HasParameter(string paramName)
+    {
+        if (animator == null || animator.runtimeAnimatorController == null) return false;
+        
+        foreach (AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.name == paramName) return true;
+        }
+        return false;
+    }
+    
     private void OnDestroy()
     {
         // Unsubscribe from events
@@ -90,13 +132,15 @@ public class PlayerAnimationController : MonoBehaviour
         if (playerMovement != null && animator.runtimeAnimatorController != null)
         {
             bool isMoving = playerMovement.IsMoving();
-            float speed = playerMovement.GetCurrentSpeed();
             
-            // Set walking animation
-            animator.SetBool(isWalkingHash, isMoving);
+            // Set running animation only if parameter exists
+            if (HasParameter("IsRunning"))
+            {
+                animator.SetBool(isRunningHash, isMoving);
+            }
             
-            // Set speed for blend trees (if using)
-            animator.SetFloat(speedHash, speed);
+            // Set speed for blend trees if needed
+            // animator.SetFloat(speedHash, playerMovement.GetCurrentSpeed());
         }
     }
     
@@ -104,11 +148,13 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (isDead || animator == null || animator.runtimeAnimatorController == null) return;
         
-        // Trigger hurt animation
-        animator.SetTrigger(hurtTriggerHash);
+        // Check if HurtTrigger parameter exists before triggering
+        if (HasParameter("HurtTrigger"))
+        {
+            animator.SetTrigger(hurtTriggerHash);
+        }
         
         // Optional: Add screen shake or damage effect here
-        Debug.Log($"Player hurt animation triggered! Damage: {damage:F1}");
     }
     
     private void OnPlayerDeath()
@@ -116,19 +162,16 @@ public class PlayerAnimationController : MonoBehaviour
         isDead = true;
         
         // Trigger death animation
-        if (animator.runtimeAnimatorController != null)
+        if (animator.runtimeAnimatorController != null && HasParameter("DeathTrigger"))
         {
             animator.SetTrigger(deathTriggerHash);
         }
-        
-        Debug.Log("Player death animation triggered!");
     }
     
     // Public methods for external triggers
     public void TriggerLevelUpAnimation()
     {
         // Can be called from PlayerExperience when leveling up
-        Debug.Log("Level up animation triggered!");
         // Add level up animation logic here
     }
     
@@ -146,7 +189,6 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (animator.runtimeAnimatorController == null)
         {
-            Debug.LogWarning("Cannot test hurt animation: No AnimatorController assigned!");
             return;
         }
         OnPlayerDamaged(10f);
@@ -157,7 +199,6 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (animator.runtimeAnimatorController == null)
         {
-            Debug.LogWarning("Cannot test death animation: No AnimatorController assigned!");
             return;
         }
         OnPlayerDeath();

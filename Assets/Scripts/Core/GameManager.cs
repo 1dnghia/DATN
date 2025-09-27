@@ -93,8 +93,6 @@ public class GameManager : MonoBehaviour
         
         // Fire event
         EventManager.OnGameStarted?.Invoke();
-        
-        Debug.Log("Game Started!");
     }
     
     public void PauseGame()
@@ -105,7 +103,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         
         // You can add pause UI here
-        Debug.Log("Game Paused!");
     }
     
     public void ResumeGame()
@@ -114,8 +111,6 @@ public class GameManager : MonoBehaviour
         
         isGamePaused = false;
         Time.timeScale = 1f;
-        
-        Debug.Log("Game Resumed!");
     }
     
     public void GameOver()
@@ -128,8 +123,6 @@ public class GameManager : MonoBehaviour
         
         // Fire event
         EventManager.OnGameOver?.Invoke();
-        
-        Debug.Log("Game Over!");
         
         // Auto restart after 3 seconds for testing
         Invoke(nameof(RestartGame), 3f);

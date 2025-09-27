@@ -44,14 +44,6 @@ public class PlayerMovement : MonoBehaviour
                 playerStats = transform.parent.GetComponentInChildren<PlayerStats>();
             }
         }
-        
-        #if UNITY_EDITOR
-        // Debug log for structure detection
-        bool isNewStructure = GetComponent<Rigidbody2D>() == null;
-        Debug.Log($"[PlayerMovement] Using {(isNewStructure ? "NEW" : "OLD")} structure on {gameObject.name}");
-        if (rb == null) Debug.LogError($"[PlayerMovement] Rigidbody2D not found on {gameObject.name} or parent!");
-        if (playerStats == null) Debug.LogWarning($"[PlayerMovement] PlayerStats not found for {gameObject.name}");
-        #endif
     }
     
     private void Reset()
@@ -103,7 +95,6 @@ public class PlayerMovement : MonoBehaviour
         // Safety check for Rigidbody2D
         if (rb == null)
         {
-            Debug.LogError($"[PlayerMovement] Rigidbody2D is null on {gameObject.name}! Cannot move.");
             return;
         }
         

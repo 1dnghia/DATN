@@ -121,7 +121,6 @@ public class PlayerStats : MonoBehaviour
         EventManager.OnPlayerDied?.Invoke();
         
         // Game over logic will be handled by GameManager
-        Debug.Log("Player Died!");
     }
     
     // Stat modification methods for upgrades

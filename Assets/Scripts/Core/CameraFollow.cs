@@ -49,7 +49,6 @@ public class CameraFollow : MonoBehaviour
         if (player != null)
         {
             target = player.transform;
-            Debug.Log($"[CameraFollow] Found Player: {player.name}");
             return;
         }
         
@@ -58,11 +57,9 @@ public class CameraFollow : MonoBehaviour
         if (playerController != null)
         {
             target = playerController.transform;
-            Debug.Log($"[CameraFollow] Found PlayerController: {playerController.name}");
             return;
         }
-        
-        Debug.LogWarning("[CameraFollow] Could not find Player. Please assign target manually.");
+
     }
     
     /// <summary>

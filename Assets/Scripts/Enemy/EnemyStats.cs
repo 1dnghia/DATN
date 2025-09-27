@@ -51,8 +51,6 @@ public class EnemyStats : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(currentHealth);
         OnTakeDamage?.Invoke();
         
-        Debug.Log($"Enemy {gameObject.name} took {damage:F1} damage. Health: {currentHealth:F1}/{maxHealth:F1}");
-        
         if (currentHealth <= 0)
         {
             Die();
@@ -72,13 +70,10 @@ public class EnemyStats : MonoBehaviour, IDamageable
         if (!CanAttack || IsDead) return;
         
         lastAttackTime = Time.time;
-        Debug.Log($"Enemy {gameObject.name} attacks for {baseDamage:F1} damage!");
     }
     
     private void Die()
     {
-        Debug.Log($"Enemy {gameObject.name} died! Dropping {experienceValue:F1} XP");
-        
         // Drop items
         DropItems();
         
@@ -109,7 +104,7 @@ public class EnemyStats : MonoBehaviour, IDamageable
                 dropPosition.z = 0; // Keep 2D
                 
                 GameObject drop = Instantiate(dropItems[i], dropPosition, Quaternion.identity);
-                Debug.Log($"Enemy dropped {drop.name}");
+                // Handle drop creation here"Enemy dropped {drop.name}");
             }
         }
     }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SimplePlayerUIManager : MonoBehaviour
 {
-    [Header("UI References - Single Canvas Approach")]
+    [Header("UI References - Single Canvas")]
     public Canvas gameUI; // Main Canvas
     public ExperienceBarUI experienceBar;
     public ScreenSpaceHealthBar healthBar;
@@ -57,7 +57,6 @@ public class SimplePlayerUIManager : MonoBehaviour
     {
         // All UI components will initialize themselves
         // This method is here for future expansion
-        Debug.Log("Player UI initialized with single Canvas approach");
     }
     
     // Public methods for manual control
@@ -119,9 +118,6 @@ public class SimplePlayerUIManager : MonoBehaviour
     [ContextMenu("Debug - Find All UI Components")]
     private void DebugFindComponents()
     {
-        Debug.Log($"Canvas: {gameUI?.name ?? "Not Found"}");
-        Debug.Log($"Experience Bar: {experienceBar?.name ?? "Not Found"}");
-        Debug.Log($"Health Bar: {healthBar?.name ?? "Not Found"}");
-        Debug.Log($"Level Up VFX: {levelUpVFX?.name ?? "Not Found"}");
+        // Component logging removed for cleaner console output
     }
 }

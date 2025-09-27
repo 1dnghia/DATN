@@ -115,15 +115,11 @@ public class ExperienceBarUI : MonoBehaviour
             
             // Set values without animation
             SetXPImmediate(currentXP, requiredXP, level);
-            
-            #if UNITY_EDITOR
-            Debug.Log($"[ExperienceBarUI] Initialized: {currentXP:F0}/{requiredXP:F0} XP, Level {level}");
-            #endif
         }
         else
         {
             #if UNITY_EDITOR
-            Debug.LogWarning("[ExperienceBarUI] PlayerExperience not found during initialization!");
+            // PlayerExperience will be found later or assigned manually
             #endif
         }
     }
