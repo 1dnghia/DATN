@@ -35,6 +35,9 @@ public class EnemySpawner : MonoBehaviour
     private Transform player;
     private List<GameObject> activeEnemies = new List<GameObject>();
     
+    // Enemy type containers
+    private Dictionary<EnemyData, Transform> enemyContainers = new Dictionary<EnemyData, Transform>();
+    
     // Spawning state
     private float spawnTimer;
     private float currentDifficulty = 1f;
@@ -54,11 +57,6 @@ public class EnemySpawner : MonoBehaviour
         {
             player = playerController.transform;
         }
-        
-        #if UNITY_EDITOR
-        if (player == null) { /* Player not found */ }
-        if (enemyTypes == null || enemyTypes.Length == 0) { /* No enemy types configured */ }
-        #endif
     }
     
     private void Start()
@@ -68,6 +66,9 @@ public class EnemySpawner : MonoBehaviour
         {
             InitializeDefaultWeights();
         }
+        
+        // Create containers for each enemy type
+        CreateEnemyContainers();
         
         // Subscribe to events
         EnemyStats.OnEnemyDeath += OnEnemyDeath;
@@ -129,8 +130,11 @@ public class EnemySpawner : MonoBehaviour
         Vector3 spawnPosition = GetSpawnPosition();
         if (spawnPosition == Vector3.zero) return; // Failed to find valid position
         
-        // Spawn enemy
-        GameObject enemy = Instantiate(enemyData.enemyPrefab, spawnPosition, Quaternion.identity);
+        // Get or create container for this enemy type
+        Transform enemyContainer = GetEnemyContainer(enemyData);
+        
+        // Spawn enemy as child of the appropriate container
+        GameObject enemy = Instantiate(enemyData.enemyPrefab, spawnPosition, Quaternion.identity, enemyContainer);
         
         // Configure enemy with data
         EnemyController enemyController = enemy.GetComponent<EnemyController>();
@@ -145,10 +149,10 @@ public class EnemySpawner : MonoBehaviour
         // Add to active enemies list
         activeEnemies.Add(enemy);
         
-        // Optional: Log spawning if enabled in inspector
+        // Log spawning if enabled
         if (logSpawning)
         {
-            // Spawned enemy at position with difficulty scaling
+            Debug.Log($"Spawned {enemyData.enemyName} at {spawnPosition} (Difficulty: {currentDifficulty:F1}x)");
         }
     }
     
@@ -244,8 +248,13 @@ public class EnemySpawner : MonoBehaviour
         float healthMultiplier = Mathf.Sqrt(currentDifficulty); // Square root scaling for health
         float damageMultiplier = currentDifficulty * 0.5f; // Linear scaling for damage
         
-        // Apply scaling (this would require modifications to EnemyStats to support runtime scaling)
-        // For now, we'll just note the intended scaling
+        // TODO: Implement scaling when EnemyStats supports runtime modification
+        // For now, store scaling values for future implementation
+        
+        if (logSpawning)
+        {
+            Debug.Log($"Difficulty scaling calculated: Health x{healthMultiplier:F2}, Damage x{damageMultiplier:F2}");
+        }
     }
     
     private void CleanupEnemies()
@@ -267,7 +276,6 @@ public class EnemySpawner : MonoBehaviour
             if (distanceToPlayer > despawnDistance)
             {
                 // Despawn distant enemy
-                
                 Destroy(enemy);
                 activeEnemies.RemoveAt(i);
             }
@@ -289,6 +297,52 @@ public class EnemySpawner : MonoBehaviour
         {
             spawnWeights[i] = 1f; // Equal weight by default
         }
+    }
+    
+    private void CreateEnemyContainers()
+    {
+        if (enemyTypes == null || enemyTypes.Length == 0) return;
+        
+        foreach (EnemyData enemyData in enemyTypes)
+        {
+            if (enemyData == null) continue;
+            
+            // Create container GameObject for this enemy type
+            GameObject containerGO = new GameObject(GetContainerName(enemyData));
+            containerGO.transform.SetParent(transform);
+            containerGO.transform.localPosition = Vector3.zero;
+            
+            // Store reference to container
+            enemyContainers[enemyData] = containerGO.transform;
+        }
+    }
+    
+    private Transform GetEnemyContainer(EnemyData enemyData)
+    {
+        if (enemyContainers.ContainsKey(enemyData))
+        {
+            return enemyContainers[enemyData];
+        }
+        
+        // Fallback: create container if it doesn't exist
+        GameObject containerGO = new GameObject(GetContainerName(enemyData));
+        containerGO.transform.SetParent(transform);
+        containerGO.transform.localPosition = Vector3.zero;
+        
+        Transform container = containerGO.transform;
+        enemyContainers[enemyData] = container;
+        
+        return container;
+    }
+    
+    private string GetContainerName(EnemyData enemyData)
+    {
+        if (enemyData == null || string.IsNullOrEmpty(enemyData.enemyName))
+        {
+            return "UnknownEnemyType";
+        }
+        
+        return enemyData.enemyName + "_Container";
     }
     
     // Public control methods
@@ -313,6 +367,19 @@ public class EnemySpawner : MonoBehaviour
             }
         }
         activeEnemies.Clear();
+        
+        // Optional: Clear containers as well
+        foreach (var container in enemyContainers.Values)
+        {
+            if (container != null)
+            {
+                // Clear all children in container
+                for (int i = container.childCount - 1; i >= 0; i--)
+                {
+                    Destroy(container.GetChild(i).gameObject);
+                }
+            }
+        }
     }
     
     public void SetSpawnRate(float newRate)

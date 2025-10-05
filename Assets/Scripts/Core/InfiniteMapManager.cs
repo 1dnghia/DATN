@@ -11,8 +11,12 @@ using System.Collections.Generic;
 public class InfiniteMapManager : MonoBehaviour
 {
     [Header("Map Settings")]
-    [Tooltip("Kích thước mỗi tile (Unity units)")]
+    [Tooltip("Kích thước mỗi tile (Unity units) - tất cả tiles sẽ scale theo size này")]
     public float tileSize = 20f;
+    
+    [Tooltip("Overlap multiplier để tránh gaps giữa tiles (1.0 = perfect fit, 1.05 = slight overlap)")]
+    [Range(0.8f, 1.2f)]
+    public float tileOverlap = 1.05f;
     
     [Tooltip("Số tiles được tạo xung quanh player (radius)")]
     public int renderDistance = 3; // 7x7 grid around player
@@ -21,11 +25,8 @@ public class InfiniteMapManager : MonoBehaviour
     public float unloadDistance = 50f;
     
     [Header("Tile Prefabs")]
-    [Tooltip("Prefab tiles cho background")]
+    [Tooltip("Prefab tiles cho background (each prefab should have BackgroundTile component)")]
     public GameObject[] tilePrefabs;
-    
-    [Tooltip("Tile weights cho random selection")]
-    public float[] tileWeights = { 1f };
     
     [Header("Performance")]
     [Tooltip("Số tiles tạo mỗi frame (để tránh lag)")]
@@ -63,11 +64,7 @@ public class InfiniteMapManager : MonoBehaviour
             player = playerController.transform;
         }
         
-        // Initialize tile weights if not set
-        if (tileWeights == null || tileWeights.Length != tilePrefabs.Length)
-        {
-            InitializeDefaultWeights();
-        }
+        // Tile prefabs should have BackgroundTile components for weight management
     }
     
     private void Start()
@@ -236,28 +233,10 @@ public class InfiniteMapManager : MonoBehaviour
     
     private GameObject ChooseTilePrefab()
     {
-        if (tilePrefabs.Length == 1) return tilePrefabs[0];
+        if (tilePrefabs == null || tilePrefabs.Length == 0) return null;
         
-        // Weighted random selection
-        float totalWeight = 0f;
-        for (int i = 0; i < tileWeights.Length && i < tilePrefabs.Length; i++)
-        {
-            totalWeight += tileWeights[i];
-        }
-        
-        float randomValue = Random.Range(0f, totalWeight);
-        float currentWeight = 0f;
-        
-        for (int i = 0; i < tileWeights.Length && i < tilePrefabs.Length; i++)
-        {
-            currentWeight += tileWeights[i];
-            if (randomValue <= currentWeight)
-            {
-                return tilePrefabs[i];
-            }
-        }
-        
-        return tilePrefabs[0];
+        // Simple random selection - weights are handled by BackgroundTile component
+        return tilePrefabs[Random.Range(0, tilePrefabs.Length)];
     }
     
     private Vector2Int GetTileCoordinate(Vector3 worldPosition)
@@ -274,25 +253,13 @@ public class InfiniteMapManager : MonoBehaviour
         return new Vector3(x, y, 0f);
     }
     
-    private void InitializeDefaultWeights()
-    {
-        tileWeights = new float[tilePrefabs.Length];
-        for (int i = 0; i < tileWeights.Length; i++)
-        {
-            tileWeights[i] = 1f;
-        }
-    }
+
     
     // Public control methods
     public void SetRenderDistance(int distance)
     {
         renderDistance = Mathf.Max(1, distance);
         QueueTileUpdates();
-    }
-    
-    public void SetTileSize(float size)
-    {
-        tileSize = Mathf.Max(1f, size);
     }
     
     public void ClearAllTiles()

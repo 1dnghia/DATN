@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8083575805511343204}
   - component: {fileID: 6682373826337698769}
   - component: {fileID: 1880425615271342905}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BackgroundTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,9 +101,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   autoConfigureSprite: 1
-  spriteVariations:
-  - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  prefabVariations:
+  - {fileID: 7450624441136613239, guid: b148e5507b98e964798a9ca4b82da9e2, type: 3}
+  chunkWeights:
+  - 1
+  autoScale: 1
   sortingOrder: -10
   sortingLayerName: Background
