@@ -113,42 +113,28 @@ public class PlayerMovement : MonoBehaviour
     
     private void FlipSprite()
     {
-        // In new structure, we need to flip the PlayerSprite, not the PlayerMovement GameObject
-        // Try to find PlayerSprite in siblings (under PlayerVisual)
-        Transform playerSprite = null;
+        // Since SpriteRenderer is now on Player GameObject directly,
+        // we flip the Player GameObject (or find the GameObject with SpriteRenderer)
+        Transform targetTransform = transform;
         
-        // First try to find PlayerSprite directly
-        if (transform.parent != null)
+        // Try to find the GameObject with SpriteRenderer component
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null && transform.parent != null)
         {
-            // Look for PlayerSprite in PlayerVisual (sibling)
-            Transform playerVisual = transform.parent.Find("PlayerVisual");
-            if (playerVisual != null)
-            {
-                playerSprite = playerVisual.Find("PlayerSprite");
-            }
-            
-            // If not found, try direct search in parent's children
-            if (playerSprite == null)
-            {
-                playerSprite = transform.parent.Find("PlayerSprite");
-            }
+            spriteRenderer = transform.parent.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+                targetTransform = transform.parent;
         }
         
-        // If still not found, try old structure (PlayerSprite as child of this object)
-        if (playerSprite == null)
-        {
-            playerSprite = transform.Find("PlayerSprite");
-        }
-        
-        // Apply flip to the correct transform
-        Transform targetTransform = playerSprite != null ? playerSprite : transform;
-        
+        // Apply horizontal flip based on movement direction
         if (moveInput.x > 0.1f)
         {
+            // Moving right - normal scale
             targetTransform.localScale = new Vector3(1f, 1f, 1f);
         }
         else if (moveInput.x < -0.1f)
         {
+            // Moving left - flip horizontally
             targetTransform.localScale = new Vector3(-1f, 1f, 1f);
         }
     }

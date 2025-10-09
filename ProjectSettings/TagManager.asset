@@ -44,20 +44,11 @@ TagManager:
   - name: Background
     uniqueID: 1038896761
     locked: 0
-  - name: Environment
+  - name: World
     uniqueID: 2115660273
     locked: 0
-  - name: Player
-    uniqueID: 110273015
-    locked: 0
-  - name: Enemies
-    uniqueID: 2635503863
-    locked: 0
-  - name: Effects
-    uniqueID: 1217655805
-    locked: 0
   - name: UI
-    uniqueID: 4018296671
+    uniqueID: 1217655805
     locked: 0
   m_RenderingLayers:
   - Default

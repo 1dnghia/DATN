@@ -140,6 +140,12 @@ public class InfiniteMapManager : MonoBehaviour
         {
             tilesToDestroy.Enqueue(tileCoord);
         }
+        
+        // Debug logging for tile operations
+        if (logTileOperations)
+        {
+            Debug.Log($"Player moved to tile {currentPlayerTile}. Queued: {tilesToCreate.Count} to create, {tilesToDestroy.Count} to destroy");
+        }
     }
     
     private void ProcessTileQueue()

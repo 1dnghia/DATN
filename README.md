@@ -1,95 +1,83 @@
-# Vampire Survivors Clone - Unity Project
+# Vampire Survivors Clo## 📖 Project Overview
+A **Vampire Survivors** clone built with Unity 2022.3+. This is a bullet hell survival roguelike featuring automatic combat mechanics and progressive upgrade systems.
 
-## 📖 Mô tả dự án
+## 🎮 Core Gameplay Featuresoject
+
+## � Tech Stack & Framework Usage
+
+**⚠️ IMPORTANT: When coding for this project, ALWAYS use these frameworks:**
+
+### Core Frameworks
+- **DOTween** - All animations, tweens, UI transitions (NO Unity Animation)
+- **Cinemachine** - All camera management and transitions  
+- **TextMeshPro** - All text display (NO Unity Text)
+- **Input System** - All input handling (NO old Input Manager)
+- **VContainer** - Dependency injection for all services/managers
+- **Addressables** - Asset loading for large/dynamic content
+- **NaughtyAttributes** - Inspector organization and conditional fields
+- **Post Processing** - Visual effects and image enhancement
+
+### Architecture Rules
+- **PersistentScene Pattern** - Managers live in persistent scene, NO DontDestroyOnLoad
+- **Singleton Pattern** - For managers with Instance property
+- **Additive Scene Loading** - Keep PersistentScene, load others additively
+
+---
+
+## �📖 Mô tả dự án
 Đây là một clone của game **Vampire Survivors** được phát triển bằng Unity 2022.3+. Game là một bullet hell survival roguelike với cơ chế tự động tấn công và hệ thống nâng cấp dần tiến.
 
 ## 📚 Documentation
 
-### 📋 **Tiến độ & Setup:**
-1. **[UNITY_SETUP_COMPLETE_GUIDE.md](./Assets/Documentation/UNITY_SETUP_COMPLETE_GUIDE.md)** - **File tiến độ chính** - Hướng dẫn setup từ đầu và theo dõi progress
-
-### 🎨 **UI Setup:**
-2. **[UI_SETUP_WITH_CUSTOM_ASSETS.md](./Assets/Documentation/UI_SETUP_WITH_CUSTOM_ASSETS.md)** - **Setup XP bar và Health bar** với custom assets & DOTween
-3. **[SIMPLE_UI_SETUP_GUIDE.md](./Assets/Documentation/SIMPLE_UI_SETUP_GUIDE.md)** - **Setup XP bar và Health bar** đơn giản với Unity default UI
-
 ## 🎮 Gameplay Core Features
-- **Tự động di chuyển**: Player chỉ điều khiển movement, không có attack button
-- **Auto attack**: Weapons tự động tấn công enemies gần nhất
-- **Survival gameplay**: Sống sót càng lâu càng tốt
-- **Level up system**: Gain EXP từ enemies → Level up → Chọn upgrades
-- **Wave-based enemies**: Enemies spawn theo waves, tăng độ khó theo thời gian
-- **Power scaling**: Player và weapons mạnh dần theo level
+- **Movement-only control**: Player only controls movement, no attack buttons
+- **Auto attack system**: Weapons automatically target nearest enemies
+- **Survival gameplay**: Survive as long as possible against endless waves
+- **Progressive leveling**: Gain EXP from enemies → Level up → Choose upgrades
+- **Wave-based spawning**: Enemy difficulty and quantity increase over time
+- **Power scaling**: Both player and weapons become stronger with levels
 
-## 🛠️ Kiến trúc dự án hiện tại
+## 🏗️ Project Architecture
 
-### 📁 Cấu trúc Scripts:
+### 📁 Scripts Structure:
 ```
 Assets/Scripts/
-├── Player/              # Logic nhân vật người chơi
-│   ├── PlayerController.cs      ✅ (Main coordinator với auto-assignment)
-│   ├── PlayerMovement.cs        ✅ (Physics-based movement với WASD + mobile)
-│   ├── PlayerStats.cs           ✅ (Health system với events)
-│   ├── PlayerExperience.cs      ✅ (XP system với progressive scaling)
-│   └── PlayerAnimationController.cs ✅ (Animation control)
-├── Enemy/               # Logic kẻ thù
-│   ├── EnemyController.cs       📝 (Chưa implement)
-│   ├── EnemyMovement.cs         📝 (Chưa implement)
-│   ├── EnemyStats.cs            📝 (Chưa implement)
-│   └── EnemySpawner.cs          📝 (Chưa implement)
-├── Weapons/             # Hệ thống vũ khí tự động
-│   ├── WeaponBase.cs            📝 (Chưa implement)
-│   ├── ProjectileWeapon.cs      📝 (Chưa implement)
-│   ├── MeleeWeapon.cs           📝 (Chưa implement)
-│   ├── WeaponManager.cs         📝 (Chưa implement)
-│   ├── Projectile.cs            📝 (Chưa implement)
-│   ├── WhipWeapon.cs            📝 (Chưa implement)
-│   ├── MagicMissileWeapon.cs    📝 (Chưa implement)
-│   └── BibleWeapon.cs           📝 (Chưa implement)
-├── Items/               # Vật phẩm pickup
-│   ├── ItemPickup.cs            📝 (Chưa implement)
-│   ├── ExperienceGem.cs         📝 (Chưa implement)
-│   ├── HealthPotion.cs          📝 (Chưa implement)
-│   └── PowerUp.cs               📝 (Chưa implement)
-├── Managers/            # Quản lý hệ thống
-│   ├── GameManager.cs           ✅ (Game state, pause/resume, restart)
-│   ├── WaveManager.cs           📝 (Enemy wave progression)
-│   ├── AudioManager.cs          📝 (SFX và music)
-│   ├── ScoreManager.cs          📝 (Scoring system)
-│   └── UpgradeManager.cs        📝 (Level up upgrade choices)
-├── UI/                  # Giao diện người dùng
-│   ├── ExperienceBarUI.cs       ✅ (XP bar với custom assets + DOTween)
-│   ├── ScreenSpaceHealthBar.cs  ✅ (Health bar follow player + effects)
-│   ├── SimplePlayerUIManager.cs ✅ (Single canvas UI coordinator)
-│   ├── GameOverPanel.cs         📝 (Game over UI)
-│   ├── MainMenu.cs              📝 (Menu system)
-│   └── UpgradePanel.cs          📝 (Level up upgrade choices)
-│   ├── UpgradePanel.cs          📝 (Chưa implement)
-│   ├── GameOverPanel.cs         📝 (Chưa implement)
-│   └── MainMenu.cs              📝 (Chưa implement)
-├── Core/                # Hệ thống cốt lõi
-│   ├── GameData.cs              📝 (Chưa implement)
-│   ├── SaveSystem.cs            📝 (Chưa implement)
-│   ├── GameStateManager.cs      📝 (Chưa implement)
-│   └── CameraController.cs      📝 (Chưa implement)
-├── Input/               # Hệ thống input đơn giản
-│   └── TouchInput.cs            ✅ (Virtual joystick cho mobile)
-├── VFX/                 # Hiệu ứng
-├── Events/              # Event system
-├── Interfaces/          # Interfaces cho clean code
-├── Constants/           # Constants và Enums
-├── Data/                # Data structures
-├── ScriptableObjects/   # Data configuration
-├── Settings/            # Game settings
-├── Utils/               # Utilities
-└── Gameplay/           # Game mechanics
+├── Player/              # Player character logic
+│   ├── PlayerController.cs      ✅ Main coordinator with auto-assignment
+│   ├── PlayerMovement.cs        ✅ Physics-based movement (WASD + mobile)
+│   ├── PlayerStats.cs           ✅ Health system with events
+│   ├── PlayerExperience.cs      ✅ XP system with progressive scaling
+│   └── PlayerAnimationController.cs ✅ Animation control
+├── Enemy/               # Enemy AI and behavior
+│   ├── EnemyController.cs       � In development
+│   ├── EnemyMovement.cs         � In development
+│   ├── EnemyStats.cs            � In development
+│   └── EnemySpawner.cs          � In development
+├── Weapons/             # Auto-attack weapon systems
+│   ├── WeaponBase.cs            � In development
+│   ├── ProjectileWeapon.cs      � In development
+│   ├── MeleeWeapon.cs           � In development
+│   ├── WeaponManager.cs         � In development
+│   └── Projectile.cs            � In development
+├── Managers/            # Core system managers
+│   ├── GameManager.cs           ✅ Game state management
+│   ├── SceneManager.cs          ✅ Scene loading system
+│   ├── LoadingManager.cs        ✅ Loading UI management
+│   └── SceneGameManager.cs      ✅ Game session management
+├── UI/                  # User interface
+│   ├── ExperienceBarUI.cs       ✅ XP bar with DOTween animations
+│   ├── ScreenSpaceHealthBar.cs  ✅ Health bar with follow mechanics
+│   └── SimplePlayerUIManager.cs ✅ UI coordination
+└── Input/               # Input handling
+    └── TouchInput.cs            ✅ Cross-platform input system
 ```
 
-## 🎯 Input System - Đơn giản như Vampire Survivors
-**✅ ĐÃ HOÀN THÀNH** - Sử dụng Unity Input Manager cơ bản:
+## 🎯 Input System
+**Simple and effective input handling:**
 
-### PC Input:
+### PC Controls:
 ```csharp
-// WASD hoặc Arrow Keys
+// WASD or Arrow Keys
 moveInput.x = Input.GetAxis("Horizontal");  // A/D, Arrow Left/Right
 moveInput.y = Input.GetAxis("Vertical");    // W/S, Arrow Up/Down
 
@@ -98,107 +86,51 @@ if (Input.GetKeyDown(KeyCode.Escape))
     PauseGame();
 ```
 
-### Mobile Input:
-- **TouchInput.cs**: Virtual joystick với UI drag & drop
-- **Cross-platform**: Tự động detect mobile và hiện joystick
-- **Static access**: `TouchInput.MoveInput` - không cần references
+### Mobile Controls:
+- **TouchInput.cs**: Virtual joystick with UI drag & drop
+- **Cross-platform**: Auto-detects mobile and shows joystick
+- **Static access**: `TouchInput.MoveInput` - no references needed
 
-### Đã xóa các file phức tạp:
-- ❌ `InputSystem_Actions.inputactions` (không cần)
-- ❌ `InputManager.cs` (không cần)
-- ❌ Unity Input System phức tạp (authentic hơn khi đơn giản)
+## � Development Status
 
-## 📊 Data Architecture
+### ✅ Completed Systems:
+1. **Project Architecture** - Clean folder structure and organization
+2. **Player System** - Complete player controller with stats and experience
+3. **Input System** - Cross-platform movement controls
+4. **UI System** - Health bars, XP bars with DOTween animations
+5. **Manager System** - Game, Scene, and Loading managers
+6. **Event Architecture** - Event-driven communication between systems
 
-### ScriptableObjects cho configuration:
-- `WeaponData.cs` - Weapon stats và upgrade paths
-- `EnemyData.cs` - Enemy stats và behaviors  
-- `CharacterData.cs` - Player character variations
-- `WaveData.cs` - Enemy wave configurations
+### � In Development:
+1. **Enemy System** - AI, spawning, health/damage mechanics
+2. **Weapon System** - Auto-attack, projectiles, upgrade system
+3. **Item System** - Pickups, experience gems, power-ups
+4. **Wave Management** - Progressive difficulty scaling
+5. **Audio System** - Sound effects and background music
 
-### Data Structures:
-- `PlayerStatsData` - Player statistics
-- `WeaponStatsData` - Weapon statistics  
-- `EnemyStatsData` - Enemy statistics
-- `UpgradeOption` - Upgrade choices
-- `EnemySpawnData` - Spawn configurations
+### 📋 Planned Features:
+1. **Upgrade System** - Level up choices and weapon evolution
+2. **Save System** - Game progress persistence
+3. **Menu System** - Main menu and settings
+4. **Polish** - Particle effects, screen shake, game juice
 
-## 🎨 Asset Structure
-```
-Assets/
-├── Art/                 # Visual assets
-│   ├── Characters/      # Player sprites
-│   ├── Enemies/         # Enemy sprites
-│   ├── Weapons/         # Weapon sprites
-│   ├── Items/           # Item sprites
-│   ├── Environment/     # Background/tiles
-│   ├── UI/              # UI elements
-│   └── VFX/             # Visual effects
-├── Audio/               # Sound effects và music
-├── Prefabs/             # GameObject prefabs
-│   ├── Player/
-│   ├── Enemies/
-│   ├── Weapons/
-│   ├── Items/
-│   ├── UI/
-│   └── VFX/
-└── Data/                # ScriptableObject instances
-    ├── Weapons/
-    ├── Enemies/
-    ├── Characters/
-    └── Waves/
-```
+## 🛠️ Technical Stack
+- **Unity 2022.3+ LTS** - Core engine
+- **2D URP** - Universal Render Pipeline for 2D
+- **C# Scripting** - Primary programming language
+- **Traditional Input Manager** - Simple and authentic input handling
+- **Event-driven Architecture** - Decoupled system communication
+- **ScriptableObjects** - Data-driven configuration
 
-## 🚀 Development Status
-
-### ✅ Hoàn thành:
-1. **Project structure** - Cấu trúc thư mục và files ✅
-2. **Input system** - Movement cho PC và mobile ✅
-3. **Player system hoàn chỉnh** - PlayerController, PlayerStats, PlayerExperience ✅
-4. **Player movement** - Smooth movement với physics ✅
-5. **Health & XP systems** - Complete với events và progression ✅
-6. **UI system** - Custom asset support với DOTween animations ✅
-   - XP Bar với level up effects
-   - Health Bar follow player
-   - Single Canvas architecture
-   - Custom sprite support
-7. **Event-driven architecture** - PlayerStats, PlayerExperience events ✅
-8. **GameManager** - Game state, pause/resume, restart ✅
-9. **Code optimization** - Clean legacy code, no duplicates ✅
-
-### 📝 Đang tiếp tục:
-1. **Enemy System** - AI, spawning, health/damage
-2. **Weapon System** - Auto-attack, projectiles, upgrades
-3. **Item/Pickup System** - XP gems, health potions, power-ups
-4. **Upgrade System** - Level up choices, weapon evolution
-5. **Wave Management** - Progressive enemy difficulty
-6. **Audio System** - SFX và background music
-7. **Game Polish** - Particle effects, screen shake, juice
-
-## 🎯 Development Approach
-- **Authentic to original**: Giữ gameplay đơn giản như Vampire Survivors
-- **Clean architecture**: Sử dụng interfaces, events, ScriptableObjects
-- **Performance-focused**: Object pooling cho bullets/enemies
-- **Cross-platform**: PC + Mobile support
-
-## 🛠️ Tech Stack
-- **Unity 2022.3+ LTS**
-- **2D Renderer (URP)**
-- **C# Scripting**
-- **Unity Input Manager** (traditional, không dùng Input System)
-- **ScriptableObjects** cho data
-- **Event-driven architecture**
-- **Single Assembly** (không dùng Assembly Definition cho đơn giản)
-
-## 📝 Notes cho Developer:
-- Game focus vào **survival và progression**, không phải skill-based combat
-- **Auto-attack** là core mechanic - player chỉ di chuyển
-- **Scaling** là key - enemies và player power phải scale đều
-- **Simple input** - authentic với game gốc
-- **Mobile-friendly** - UI và controls phải tốt trên mobile
+## 🎯 Design Philosophy
+- **Authentic gameplay**: Stay true to Vampire Survivors mechanics
+- **Simple controls**: Movement-only, no complex input schemes
+- **Progressive difficulty**: Balanced scaling for long-term engagement
+- **Cross-platform ready**: Optimized for both PC and mobile
+- **Clean codebase**: Maintainable and extensible architecture
+- **Performance focused**: Efficient systems for hundreds of entities
 
 ---
-**Last Updated**: September 4, 2025
-**Current Focus**: Enemy System implementation - AI, spawning, combat mechanics
-
-**Player System**: ✅ **HOÀN THÀNH 100%** - Ready for production!
+**Last Updated**: October 9, 2025  
+**Current Focus**: Enemy system implementation  
+**Status**: Core player systems complete, expanding gameplay mechanics
