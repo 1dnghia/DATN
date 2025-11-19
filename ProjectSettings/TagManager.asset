@@ -2,20 +2,20 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 3
+  serializedVersion: 2
   tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Background
+  - 
   - Water
   - UI
-  - Enemies
-  - Player
-  - Projectiles
-  - Effects
-  - 
+  - Monster Full
+  - Monster Legs
+  - Player Full
+  - Player Legs
+  - Chest
   - 
   - 
   - 
@@ -38,17 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1017377967
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background
-    uniqueID: 1038896761
+  - name: Foreground
+    uniqueID: 779922199
     locked: 0
-  - name: World
-    uniqueID: 2115660273
-    locked: 0
-  - name: UI
-    uniqueID: 1217655805
-    locked: 0
-  m_RenderingLayers:
-  - Default

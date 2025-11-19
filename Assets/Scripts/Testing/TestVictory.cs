@@ -1,0 +1,81 @@
+using UnityEngine;
+
+namespace Vampire
+{
+    /// <summary>
+    /// Test script to simulate instant victory condition
+    /// Attach this to any GameObject in the scene to test the victory screen
+    /// Press V key to trigger victory
+    /// </summary>
+    public class TestVictory : MonoBehaviour
+    {
+        [SerializeField] private LevelManager levelManager;
+        [SerializeField] private bool autoFindLevelManager = true;
+
+        private void Start()
+        {
+            if (autoFindLevelManager && levelManager == null)
+            {
+                levelManager = FindObjectOfType<LevelManager>();
+            }
+
+            if (levelManager == null)
+            {
+                Debug.LogError("TestVictory: LevelManager not found! Please assign it in the inspector.");
+            }
+        }
+
+        private void Update()
+        {
+            // Press V to trigger victory
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                TriggerVictory();
+            }
+        }
+
+        /// <summary>
+        /// Simulates winning the game by calling LevelPassed
+        /// </summary>
+        public void TriggerVictory()
+        {
+            if (levelManager == null)
+            {
+                Debug.LogError("TestVictory: Cannot trigger victory - LevelManager is null!");
+                return;
+            }
+
+            Debug.Log("TestVictory: Triggering victory condition...");
+            
+            // Call LevelPassed with null (since we don't have a real boss monster)
+            // Note: LevelPassed expects a Monster parameter but doesn't actually use it
+            levelManager.LevelPassed(null);
+        }
+
+        /// <summary>
+        /// Alternative method using reflection to access private method if needed
+        /// </summary>
+        public void TriggerVictoryViaReflection()
+        {
+            if (levelManager == null)
+            {
+                Debug.LogError("TestVictory: Cannot trigger victory - LevelManager is null!");
+                return;
+            }
+
+            Debug.Log("TestVictory: Triggering victory via reflection...");
+            
+            var method = typeof(LevelManager).GetMethod("LevelPassed", 
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            
+            if (method != null)
+            {
+                method.Invoke(levelManager, new object[] { null });
+            }
+            else
+            {
+                Debug.LogError("TestVictory: Could not find LevelPassed method!");
+            }
+        }
+    }
+}
