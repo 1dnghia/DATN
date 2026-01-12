@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
 namespace Vampire
@@ -8,7 +8,10 @@ namespace Vampire
         [SerializeField] protected RectTransform barBackground, barFill;
         [SerializeField] protected UnityEvent onEmpty, onFull;
 
-        protected float currentPoints, minPoints, maxPoints;
+        [Header("Current Stats (Runtime Only)")]
+        [SerializeField] protected float currentPoints;
+        [SerializeField] protected float minPoints;
+        [SerializeField] protected float maxPoints;
         protected bool clamp;
 
         public float CurrentPoints { get => currentPoints; set => currentPoints = value; }

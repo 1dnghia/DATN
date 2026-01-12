@@ -1,4 +1,4 @@
-/// Adapted from the following Unity Forums post:
+﻿/// Adapted from the following Unity Forums post:
 /// https://answers.unity.com/questions/1040319/whats-the-proper-way-to-queue-and-space-function-c.html
 
 using System.Collections;

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace Vampire
@@ -12,7 +12,7 @@ namespace Vampire
         }
 
         [SerializeField] protected Transform throwableSpawnPosition;
-        protected new ThrowingMonsterBlueprint monsterBlueprint;
+        [System.NonSerialized] protected new ThrowingMonsterBlueprint monsterBlueprint;
         protected float timeSinceLastAttack;
         protected State state;
         protected float outOfRangeTime;

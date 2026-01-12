@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 namespace Vampire
@@ -11,12 +11,27 @@ namespace Vampire
         void Start()
         {
             coinText = GetComponent<TextMeshProUGUI>();
-            coinText.text = PlayerPrefs.GetInt("Coins").ToString();
+            
+            // Subscribe to Singleton CoinManager
+            CoinManager.Instance.OnCoinChanged.AddListener(UpdateDisplay);
+            UpdateDisplay(CoinManager.Instance.GetCurrentCoins());
+        }
+        
+        void OnDestroy()
+        {
+            // Unsubscribe khi destroy
+            if (CoinManager.Instance != null)
+                CoinManager.Instance.OnCoinChanged.RemoveListener(UpdateDisplay);
+        }
+
+        public void UpdateDisplay(int coins)
+        {
+            coinText.text = coins.ToString();
         }
 
         public void UpdateDisplay()
         {
-            coinText.text = PlayerPrefs.GetInt("Coins").ToString();
+            coinText.text = CoinManager.Instance.GetCurrentCoins().ToString();
         }
     }
 }

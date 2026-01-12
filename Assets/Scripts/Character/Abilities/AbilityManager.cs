@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,6 +29,10 @@ namespace Vampire
         public int FireRateUpgradeablesCount { get; set; } = 0;
         public int DurationUpgradeablesCount { get; set; } = 0;
         public int RotationSpeedUpgradeablesCount { get; set; } = 0;
+        
+        // Meta upgrade bonuses (from permanent upgrades before game starts)
+        public float MetaDamageBonus { get; set; } = 0;
+        public float MetaRecoveryBonus { get; set; } = 0;
 
         public void Init(LevelBlueprint levelBlueprint, EntityManager entityManager, Character playerCharacter, AbilityManager abilityManager)
         {
@@ -44,6 +48,9 @@ namespace Vampire
                 ability.Init(abilityManager, entityManager, playerCharacter);
                 ability.Select();
                 ownedAbilities.Add(ability);
+                
+                // Track weapon for collection
+                CollectionTracker.UnlockWeapon(abilityPrefab.name);
             }
             
             newAbilities = new WeightedAbilities();
@@ -73,10 +80,7 @@ namespace Vampire
                 upgradeableValue.Upgrade(value);
             }
         }
-
-        /// <summary>
         /// Select abilities.
-        /// </summary>
         public List<Ability> SelectAbilities()
         {
             List<Ability> selectedAbilities = new List<Ability>();
@@ -176,10 +180,7 @@ namespace Vampire
 
             return availableAbilities;
         }
-
-        /// <summary>
         /// Pulls an ability from the list of given list abilities and its weight.
-        /// </summary>
         private Ability PullAbility(WeightedAbilities abilities)
         {
             float rand = Random.Range(0f, abilities.Weight);
@@ -196,28 +197,19 @@ namespace Vampire
             Debug.LogError("Failed to pull ability!");
             return null;
         }
-
-        /// <summary>
         /// Chance that an ability already owned by the player should appear
         /// (so that it can be upgraded)
-        /// </summary>
         private float OwnedChance()
         {
             float x = playerCharacter.CurrentLevel % 2 == 0 ? 2 : 1;
             return 1 + 0.3f*x - 1/playerCharacter.Luck;
         }
-
-        /// <summary>
         /// Chance that a fourth ability/upgrade option appears
-        /// </summary>
         private float FourthChance()
         {
             return 1 - 1/playerCharacter.Luck;
         }
-
-        /// <summary>
         /// Resolves a chance function.
-        /// </summary>
         private bool ResolveChance(System.Func<float> chanceFunction)
         {
             return Random.Range(0.0f, 1.0f) < chanceFunction();

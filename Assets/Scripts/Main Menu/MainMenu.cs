@@ -1,14 +1,12 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Vampire
 {
-    /// <summary>
     /// Main Menu UI Manager
     /// Manages all button clicks and page navigation without using OnClick events in Inspector
-    /// </summary>
     public class MainMenu : MonoBehaviour
     {
         [System.Serializable]
@@ -17,21 +15,19 @@ namespace Vampire
             [Tooltip("Button trong Main Menu")]
             public Button button;
             
-            [Tooltip("Page/Panel tương ứng sẽ hiện khi click button")]
+            [Tooltip("Page/Panel tÆ°Æ¡ng á»©ng sáº½ hiá»‡n khi click button")]
             public GameObject page;
         }
 
         [Header("Core References")]
         [SerializeField] private GameObject mainMenuPage;
         [SerializeField] private CharacterSelector characterSelector;
+        [SerializeField] private DialogBox mapSelectionDialogBox;
+        [SerializeField] private MapSelection mapSelection;
         
         [Header("Button-Page Mappings")]
-        [Tooltip("Danh sách các button và page tương ứng")]
+        [Tooltip("Danh sÃ¡ch cÃ¡c button vÃ  page tÆ°Æ¡ng á»©ng")]
         [SerializeField] private List<ButtonPageMapping> buttonPageMappings = new List<ButtonPageMapping>();
-        
-        [Header("Back Buttons")]
-        [Tooltip("Các button Back để quay về Main Menu")]
-        [SerializeField] private List<Button> backButtons = new List<Button>();
         
         [Header("Exit Button")]
         [SerializeField] private Button exitButton;
@@ -65,13 +61,6 @@ namespace Vampire
                 }
             }
             
-            // Subscribe to back buttons
-            foreach (var backButton in backButtons)
-            {
-                if (backButton != null)
-                    backButton.onClick.AddListener(ShowMainMenu);
-            }
-            
             // Subscribe to exit button
             if (exitButton != null)
                 exitButton.onClick.AddListener(QuitGame);
@@ -86,23 +75,13 @@ namespace Vampire
                     mapping.button.onClick.RemoveAllListeners();
             }
             
-            // Unsubscribe from back buttons
-            foreach (var backButton in backButtons)
-            {
-                if (backButton != null)
-                    backButton.onClick.RemoveAllListeners();
-            }
-            
             // Unsubscribe from exit button
             if (exitButton != null)
                 exitButton.onClick.RemoveAllListeners();
         }
 
         #region Page Navigation
-
-        /// <summary>
         /// Show a specific page and hide all others
-        /// </summary>
         private void ShowPage(GameObject pageToShow)
         {
             // Hide main menu
@@ -119,19 +98,25 @@ namespace Vampire
             // Show the selected page
             pageToShow.SetActive(true);
         }
-
-        /// <summary>
-        /// Show main menu and hide all other pages
-        /// </summary>
-        private void ShowMainMenu()
+        /// Hide all pages including map selection
+        private void HideAllPages()
         {
+            // Hide main menu
+            if (mainMenuPage != null)
+                mainMenuPage.SetActive(false);
             
-            // Hide all pages
+            // Hide all other pages
             foreach (var mapping in buttonPageMappings)
             {
                 if (mapping.page != null)
                     mapping.page.SetActive(false);
             }
+        }
+        /// Show main menu and hide all other pages
+        public void ShowMainMenu()
+        {
+            // Hide all pages
+            HideAllPages();
             
             // Show main menu
             if (mainMenuPage != null)
@@ -141,10 +126,51 @@ namespace Vampire
         #endregion
 
         #region Public Methods
-
-        /// <summary>
+        /// Show map selection page with selected character
+        public void ShowMapSelectionPage(CharacterBlueprint selectedCharacter)
+        {
+            Debug.Log("MainMenu: ShowMapSelectionPage called with character: " + (selectedCharacter != null ? selectedCharacter.name : "null"));
+            
+            // Hide all pages
+            HideAllPages();
+            
+            // Init map selection data
+            if (mapSelection != null)
+            {
+                mapSelection.Init(selectedCharacter);
+            }
+            else
+            {
+                Debug.LogError("MainMenu: MapSelection reference is missing!");
+            }
+            
+            // Open dialog box
+            if (mapSelectionDialogBox != null)
+            {
+                mapSelectionDialogBox.Open();
+            }
+            else
+            {
+                Debug.LogError("MainMenu: MapSelectionDialogBox reference is missing!");
+            }
+        }
+        /// Show character selection page (used by back button from map selection)
+        public void ShowCharacterSelectionPage()
+        {
+            
+            foreach (var mapping in buttonPageMappings)
+            {
+                
+                if (mapping.page != null && mapping.page.GetComponentInChildren<CharacterSelector>() != null)
+                {
+                    ShowPage(mapping.page);
+                    return;
+                }
+            }
+            
+            Debug.LogWarning("MainMenu: Could not find character selection page!");
+        }
         /// Start the game with selected character
-        /// </summary>
         public void StartGame(CharacterBlueprint characterBlueprint)
         {
             if (characterSelector != null)
@@ -152,10 +178,7 @@ namespace Vampire
             else
                 Debug.LogError("MainMenu: CharacterSelector reference is missing!");
         }
-
-        /// <summary>
         /// Quit the game
-        /// </summary>
         public void QuitGame()
         {
             Debug.Log("MainMenu: Quitting game...");

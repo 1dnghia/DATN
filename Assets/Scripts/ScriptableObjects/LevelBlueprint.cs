@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Vampire
@@ -6,6 +6,10 @@ namespace Vampire
     [CreateAssetMenu(fileName = "Level", menuName = "Blueprints/Level", order = 1)]
     public class LevelBlueprint : ScriptableObject
     {
+        [Header("Scene")]
+        [Tooltip("TÃªn scene Ä‘á»ƒ load (pháº£i cÃ³ trong Build Settings)")]
+        public string sceneName;
+        
         [Header("Time")]
         public float levelTime = 600;
         [Header("Background")]

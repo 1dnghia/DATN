@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -15,8 +15,8 @@ namespace Vampire
         [SerializeField] protected float lookIndicatorRadius;
         [SerializeField] protected TextMeshProUGUI levelText;
         [SerializeField] protected AbilitySelectionDialog abilitySelectionDialog;
-        [SerializeField] protected PointBar healthBar;  // 血量條
-        [SerializeField] protected PointBar expBar;  // 經驗條
+        [SerializeField] protected PointBar healthBar;
+        [SerializeField] protected PointBar expBar;
         [SerializeField] protected Collider2D collectableCollider;
         [SerializeField] protected Collider2D meleeHitboxCollider;
         [SerializeField] protected ParticleSystem dustParticles;
@@ -31,6 +31,8 @@ namespace Vampire
         protected float nextLevelExp = 5;
         protected float expToNextLevel = 5;
         protected float currentHealth;
+        protected float maxHealth;  
+        protected float totalLuck;  
         protected SpriteRenderer spriteRenderer;
         protected SpriteAnimator spriteAnimator;
         protected AbilityManager abilityManager;
@@ -53,7 +55,7 @@ namespace Vampire
         }
         public Transform CenterTransform { get => centerTransform; }
         public Collider2D CollectableCollider { get => collectableCollider; }
-        public float Luck { get => characterBlueprint.luck; }
+        public float Luck { get => totalLuck; }
         public int CurrentLevel { get => currentLevel; }
         public UnityEvent<float> OnDealDamage { get; } = new UnityEvent<float>();
         public UnityEvent OnDeath { get; } = new UnityEvent();
@@ -80,28 +82,63 @@ namespace Vampire
             this.entityManager = entityManager;
             this.abilityManager = abilityManager;
             this.statsManager = statsManager;
+            
+            // Load meta upgrades from PlayerPrefs
+            var metaUpgrades = CrossSceneData.LoadMetaUpgrades();
+            
+            // Set meta upgrade bonuses in AbilityManager
+            float damageBonus = metaUpgrades.ContainsKey(UpgradeStatType.Damage) ? metaUpgrades[UpgradeStatType.Damage] : 0;
+            abilityManager.MetaDamageBonus = damageBonus;
+            
+            float recoveryBonus = metaUpgrades.ContainsKey(UpgradeStatType.Recovery) ? metaUpgrades[UpgradeStatType.Recovery] : 0;
+            abilityManager.MetaRecoveryBonus = recoveryBonus;
+            
             // Add listener to increase damage dealt whenever player deals damage
             OnDealDamage.AddListener(statsManager.IncreaseDamageDealt);
             // Initialize the coroutine queue
             coroutineQueue = new CoroutineQueue(this);
             coroutineQueue.StartLoop();
-            // Initialize starting health and exp
-            currentHealth = characterBlueprint.hp;
-            healthBar.Setup(currentHealth, 0, characterBlueprint.hp);
+            
+            // Initialize starting health with meta upgrade bonus (percentage)
+            float maxHealthBonus = metaUpgrades.ContainsKey(UpgradeStatType.MaxHealth) ? metaUpgrades[UpgradeStatType.MaxHealth] : 0;
+            maxHealth = characterBlueprint.hp * (1 + maxHealthBonus / 100f);
+            currentHealth = maxHealth;
+            healthBar.Setup(currentHealth, 0, maxHealth);
+            
             expBar.Setup(currentExp, 0, nextLevelExp);
             currentLevel = 1;
             UpdateLevelDisplay();
             // Initialize animations
             spriteAnimator.Init(characterBlueprint.walkSpriteSequence, characterBlueprint.walkFrameTime, false);
-            // Limit max speed using drag
+            
+            // Limit max speed using drag with meta upgrade bonus (percentage)
+            float moveSpeedBonus = metaUpgrades.ContainsKey(UpgradeStatType.MoveSpeed) ? metaUpgrades[UpgradeStatType.MoveSpeed] : 0;
             movementSpeed = new UpgradeableMovementSpeed();
-            movementSpeed.Value = characterBlueprint.movespeed;
+            movementSpeed.Value = characterBlueprint.movespeed * (1 + moveSpeedBonus / 100f);
             abilityManager.RegisterUpgradeableValue(movementSpeed, true);
             UpdateMoveSpeed();
-            // Initialize upgradeable armor
+            
+            // Initialize upgradeable armor with meta upgrade bonus (percentage)
+            float armorBonus = metaUpgrades.ContainsKey(UpgradeStatType.Armor) ? metaUpgrades[UpgradeStatType.Armor] : 0;
             armor = new UpgradeableArmor();
-            armor.Value = characterBlueprint.armor;
+            armor.Value = (int)(characterBlueprint.armor * (1 + armorBonus / 100f));
             abilityManager.RegisterUpgradeableValue(armor, true);
+            
+            // Apply Luck meta upgrade (percentage)
+            float luckBonus = metaUpgrades.ContainsKey(UpgradeStatType.Luck) ? metaUpgrades[UpgradeStatType.Luck] : 0;
+            totalLuck = characterBlueprint.luck * (1 + luckBonus / 100f);
+            
+            // Apply PickupRange meta upgrade (percentage)
+            float pickupRangeBonus = metaUpgrades.ContainsKey(UpgradeStatType.PickupRange) ? metaUpgrades[UpgradeStatType.PickupRange] : 0;
+            if (collectableCollider is CircleCollider2D circleCollider)
+            {
+                circleCollider.radius *= (1 + pickupRangeBonus / 100f);
+            }
+            
+            // Recovery and Damage will be handled separately
+            // Recovery: needs to be applied to recovery abilities
+            // Damage: needs to be applied to all damage-dealing abilities
+            
             zPositioner.Init(transform);
         }
 
@@ -245,8 +282,8 @@ namespace Vampire
         {
             healthBar.AddPoints(health);
             currentHealth += health;
-            if (currentHealth > characterBlueprint.hp)
-                currentHealth = characterBlueprint.hp;
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
         }
 
         public void SetLookDirecton(InputAction.CallbackContext context)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +28,27 @@ namespace Vampire
         private CoinDisplay coinDisplay;
         private StartingAbilityContainer[] startingAbilityContainers;
         private bool initialized;
+        private bool isOwned; // Runtime ownership state từ PlayerPrefs
+
+        // Check xem character đã được unlock chưa từ PlayerPrefs
+        private bool IsCharacterOwned()
+        {
+            // Character free (cost = 0) hoặc owned mặc định trong blueprint
+            if (characterBlueprint.cost == 0 || characterBlueprint.owned)
+                return true;
+            
+            string ownedKey = $"Character_{characterBlueprint.name}_Owned";
+            return PlayerPrefs.GetInt(ownedKey, 0) == 1;
+        }
+
+        // Lưu character ownership vào PlayerPrefs
+        private void SetCharacterOwned()
+        {
+            string ownedKey = $"Character_{characterBlueprint.name}_Owned";
+            PlayerPrefs.SetInt(ownedKey, 1);
+            PlayerPrefs.Save();
+            isOwned = true;
+        }
 
         private void OnEnable()
         {
@@ -45,6 +66,9 @@ namespace Vampire
             this.characterBlueprint = characterBlueprint;
             this.coinDisplay = coinDisplay;
 
+            // Load ownership state từ PlayerPrefs
+            isOwned = IsCharacterOwned();
+
             characterImage.sprite = characterBlueprint.walkSpriteSequence[0];
 
             nameText.text = characterBlueprint.name.ToString();
@@ -53,7 +77,7 @@ namespace Vampire
             mvspdText.text = Mathf.RoundToInt(characterBlueprint.movespeed/1.15f * 100f).ToString()+"%";
             luckText.text = characterBlueprint.luck.ToString();
             UpdateButtonText();
-            buttonImage.color = characterBlueprint.owned ? selectColor : buyColor;
+            buttonImage.color = isOwned ? selectColor : buyColor;
 
             // Instantiate the images
             startingAbilityContainers = new StartingAbilityContainer[characterBlueprint.startingAbilities.Length];
@@ -96,13 +120,13 @@ namespace Vampire
 
         public void Selected()
         {
-            if (!characterBlueprint.owned)
+            if (!isOwned)
             {
                 int coinCount = PlayerPrefs.GetInt("Coins");
                 if (coinCount >= characterBlueprint.cost)
                 {
                     PlayerPrefs.SetInt("Coins", coinCount - characterBlueprint.cost);
-                    characterBlueprint.owned = true;
+                    SetCharacterOwned(); // Lưu vào PlayerPrefs
                     UpdateButtonText();
                     buttonImage.color = selectColor;
                     coinDisplay.UpdateDisplay();
@@ -123,7 +147,7 @@ namespace Vampire
         {
             if (!initialized) return;
             
-            if (characterBlueprint.owned)
+            if (isOwned)
             {
                 buttonText.text = selectLocalization.GetLocalizedString();
             }

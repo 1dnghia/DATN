@@ -1,4 +1,4 @@
-namespace Vampire
+﻿namespace Vampire
 {
     public class DamageUpgradeAbility : FloatUpgradeAbility<UpgradeableDamage>
     {

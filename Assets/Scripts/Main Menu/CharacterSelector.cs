@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -9,13 +9,16 @@ namespace Vampire
         [SerializeField] protected CharacterBlueprint[] characterBlueprints;
         [SerializeField] protected GameObject characterCardPrefab;
         [SerializeField] protected CoinDisplay coinDisplay;
+        
+        [Header("Map Selection")]
+        [SerializeField] private MainMenu mainMenu;
 
         private CharacterCard[] characterCards;
         private bool initialized = false;
 
         private void OnEnable()
         {
-            // Kiểm tra xem các card có bị destroy không
+            
             bool cardsValid = true;
             if (characterCards != null)
             {
@@ -29,7 +32,7 @@ namespace Vampire
                 }
             }
             
-            // Khởi tạo lại nếu chưa init hoặc cards bị destroy
+            
             if (!initialized || characterCards == null || characterCards.Length == 0 || !cardsValid)
             {
                 Init();
@@ -38,7 +41,7 @@ namespace Vampire
         
         public void Init()
         {
-            // Xóa các card cũ nếu có
+            
             if (characterCards != null)
             {
                 foreach (var card in characterCards)
@@ -67,8 +70,18 @@ namespace Vampire
         
         public void StartGame(CharacterBlueprint characterBlueprint)
         {
-            CrossSceneData.CharacterBlueprint = characterBlueprint;
-            SceneManager.LoadScene(1);
+            
+            if (mainMenu != null)
+            {
+                mainMenu.ShowMapSelectionPage(characterBlueprint);
+            }
+            else
+            {
+                
+                Debug.LogWarning("CharacterSelector: MainMenu reference is missing. Loading game directly.");
+                CrossSceneData.CharacterBlueprint = characterBlueprint;
+                SceneManager.LoadScene(1);
+            }
         }
     }
 }

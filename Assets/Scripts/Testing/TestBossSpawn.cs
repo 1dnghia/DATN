@@ -1,13 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Vampire
 {
-    /// <summary>
     /// Test script to instantly spawn the final boss
     /// Attach this to any GameObject in the scene to test boss fight
     /// Press B key to spawn boss immediately
     /// Press T key to skip to boss time (levelTime)
-    /// </summary>
     public class TestBossSpawn : MonoBehaviour
     {
         [SerializeField] private LevelManager levelManager;
@@ -56,10 +54,7 @@ namespace Vampire
                 ShowCurrentTime();
             }
         }
-
-        /// <summary>
         /// Forces the boss to spawn immediately by manipulating the level time
-        /// </summary>
         public void ForceSpawnBoss()
         {
             Debug.Log("TestBossSpawn: Forcing boss spawn...");
@@ -92,10 +87,7 @@ namespace Vampire
                 Debug.LogError("TestBossSpawn: Could not access levelTime or levelBlueprint field!");
             }
         }
-
-        /// <summary>
         /// Skips time to the configured skip time (default: boss spawn time)
-        /// </summary>
         public void SkipToBossTime()
         {
             Debug.Log($"TestBossSpawn: Skipping to time {skipToTime}...");
@@ -113,10 +105,7 @@ namespace Vampire
                 Debug.LogError("TestBossSpawn: Could not access levelTime field!");
             }
         }
-
-        /// <summary>
         /// Shows the current level time in the console
-        /// </summary>
         public void ShowCurrentTime()
         {
             var levelTimeField = typeof(LevelManager).GetField("levelTime", 
@@ -139,10 +128,7 @@ namespace Vampire
                 }
             }
         }
-
-        /// <summary>
         /// Add time instantly (useful for testing)
-        /// </summary>
         public void AddTime(float seconds)
         {
             var levelTimeField = typeof(LevelManager).GetField("levelTime", 

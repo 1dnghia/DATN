@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ namespace Vampire
     public class CharacterSetGenerator : MonoBehaviour
     {
         [SerializeField] private string _characterSetFilePath = "Assets/Fonts/CharacterSet.txt";
-        [SerializeField, TextArea] private string _defaultCharacters = "1234567890-=！@#￥%……&*()~:\"{}[]|\\?/<>,.;'+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ【】「」。：，";
+        [SerializeField, TextArea] private string _defaultCharacters = "1234567890-=ï¼@#ï¿¥%â€¦â€¦&*()~:\"{}[]|\\?/<>,.;'+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZã€ã€‘ã€Œã€ã€‚ï¼šï¼Œ";
         [SerializeField] private StringTableCollection[] _stringTables;
         
         void Start()

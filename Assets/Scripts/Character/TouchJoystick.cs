@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.InputSystem.OnScreen;
@@ -6,10 +6,8 @@ using UnityEngine.InputSystem.Layouts;
 
 namespace Vampire
 {
-    /// <summary>
     /// Touch interactable joystick. Utilizes IPointer interfaces to ensure
     /// make touches interacting with other UI elements easier to handle.
-    /// </summary>
     public class TouchJoystick : OnScreenControl, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField] private bool permanent = false;

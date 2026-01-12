@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Vampire
@@ -47,7 +47,18 @@ namespace Vampire
         // Start is called before the first frame update
         void Start()
         {
-            Init(levelBlueprint);
+
+            if (CrossSceneData.CurrentMap != null && CrossSceneData.CurrentMap.levelBlueprint != null)
+            {
+                Debug.Log($"LevelManager: Using level blueprint from map '{CrossSceneData.CurrentMap.name}'");
+                Init(CrossSceneData.CurrentMap.levelBlueprint);
+            }
+            else
+            {
+                
+                Debug.Log("LevelManager: Using level blueprint from Inspector");
+                Init(levelBlueprint);
+            }
         }
 
         // Update is called once per frame
@@ -110,6 +121,16 @@ namespace Vampire
             Time.timeScale = 0;
             int coinCount = PlayerPrefs.GetInt("Coins");
             PlayerPrefs.SetInt("Coins", coinCount + statsManager.CoinsGained);
+            
+            
+            if (CrossSceneData.CurrentMap != null)
+            {
+                string mapCompletedKey = $"Map_{CrossSceneData.CurrentMap.name}_Completed";
+                PlayerPrefs.SetInt(mapCompletedKey, 1);
+                PlayerPrefs.Save();
+                Debug.Log($"Map '{CrossSceneData.CurrentMap.name}' completed and saved!");
+            }
+            
             gameOverDialog.Open(true, statsManager);
         }
 

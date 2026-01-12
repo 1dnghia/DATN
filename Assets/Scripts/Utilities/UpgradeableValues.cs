@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
@@ -38,9 +38,9 @@ namespace Vampire
         public abstract string GetUpgradeDescription();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
     /// Upgradeable Floats
-    ////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
     public abstract class UpgradeableFloat : UpgradeableValue<float>
     {
         public override void Upgrade(float upgrade)
@@ -60,6 +60,13 @@ namespace Vampire
     {
         protected override string UpgradeName => LocalizationSettings.StringDatabase.GetLocalizedString("Upgradeable Values", "Damage");
         public override void RegisterInUse() { abilityManager.DamageUpgradeablesCount++; }
+        
+        // Override Value to include meta damage bonus (percentage)
+        public override float Value 
+        { 
+            get => value * (1 + (abilityManager != null ? abilityManager.MetaDamageBonus / 100f : 0)); 
+            set => this.value = value; 
+        }
     }
     [System.Serializable] public class UpgradeableDamageRate : UpgradeableFloat
     {
@@ -127,9 +134,9 @@ namespace Vampire
         public override void RegisterInUse() { abilityManager.RotationSpeedUpgradeablesCount++; }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
     /// Upgradeable Ints
-    ////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
     public abstract class UpgradeableInt : UpgradeableValue<int>
     {
         public override void Upgrade(int upgrade)
@@ -161,6 +168,13 @@ namespace Vampire
     {
         protected override string UpgradeName => LocalizationSettings.StringDatabase.GetLocalizedString("Upgradeable Values", "Recovery");
         public override void RegisterInUse() { abilityManager.RecoveryUpgradeablesCount++; }
+        
+        // Override Value to include meta recovery bonus (percentage)
+        public override int Value 
+        { 
+            get => (int)(value * (1 + (abilityManager != null ? abilityManager.MetaRecoveryBonus / 100f : 0))); 
+            set => this.value = value; 
+        }
     }
     [System.Serializable] public class UpgradeableArmor : UpgradeableInt
     {

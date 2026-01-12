@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace Vampire
@@ -6,7 +6,7 @@ namespace Vampire
     public class BoomerangMonster : Monster
     {
         [SerializeField] protected Transform boomerangSpawnPosition;
-        protected new BoomerangMonsterBlueprint monsterBlueprint;
+        [System.NonSerialized] protected new BoomerangMonsterBlueprint monsterBlueprint;
         protected float timeSinceLastBoomerangAttack;
         protected float timeSinceLastMeleeAttack;
         protected float outOfRangeTime;

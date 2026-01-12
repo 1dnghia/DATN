@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94449d710f83429796c060423fde854, type: 3}
   m_Name: Test Level
   m_EditorClassIdentifier: 
+  sceneName: Level 1
   levelTime: 600
   backgroundTexture: {fileID: 2800000, guid: ef38aa5dbbc5a456591de268af081efc, type: 3}
   abilityPrefabs:

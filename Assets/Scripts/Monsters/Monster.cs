@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,13 +14,13 @@ namespace Vampire
         protected BoxCollider2D monsterHitbox;
         protected CircleCollider2D monsterLegsCollider;
         protected int monsterIndex;
-        protected MonsterBlueprint monsterBlueprint;
+        [System.NonSerialized] protected MonsterBlueprint monsterBlueprint;
         protected SpriteAnimator monsterSpriteAnimator;
         protected SpriteRenderer monsterSpriteRenderer;
         protected ZPositioner zPositioner;
-        protected float currentHealth;  // 血量
-        protected EntityManager entityManager;  // 怪物池
-        protected Character playerCharacter;  // 角色
+        protected float currentHealth;
+        protected EntityManager entityManager;
+        protected Character playerCharacter;
         protected Rigidbody2D rb;
         protected int currWalkSequenceFrame = 0;
         protected bool knockedBack = false;
@@ -73,6 +73,9 @@ namespace Vampire
             // Ensure colliders are enabled and sized correctly
             monsterHitbox.enabled = true;
             monsterHitbox.size = monsterSpriteRenderer.bounds.size;
+            
+            // Track monster discovery for collection
+            CollectionTracker.UnlockMonster(monsterBlueprint);
             monsterHitbox.offset = Vector2.up * monsterHitbox.size.y/2;
             monsterLegsCollider.radius = monsterHitbox.size.x/2.5f;
             centerTransform = (new GameObject("Center Transform")).transform;

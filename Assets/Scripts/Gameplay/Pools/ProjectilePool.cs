@@ -1,4 +1,4 @@
-using UnityEngine.Pool;
+﻿using UnityEngine.Pool;
 using UnityEngine;
 
 namespace Vampire

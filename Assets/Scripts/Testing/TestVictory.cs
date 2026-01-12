@@ -1,12 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Vampire
 {
-    /// <summary>
     /// Test script to simulate instant victory condition
     /// Attach this to any GameObject in the scene to test the victory screen
     /// Press V key to trigger victory
-    /// </summary>
     public class TestVictory : MonoBehaviour
     {
         [SerializeField] private LevelManager levelManager;
@@ -33,10 +31,7 @@ namespace Vampire
                 TriggerVictory();
             }
         }
-
-        /// <summary>
         /// Simulates winning the game by calling LevelPassed
-        /// </summary>
         public void TriggerVictory()
         {
             if (levelManager == null)
@@ -51,10 +46,7 @@ namespace Vampire
             // Note: LevelPassed expects a Monster parameter but doesn't actually use it
             levelManager.LevelPassed(null);
         }
-
-        /// <summary>
         /// Alternative method using reflection to access private method if needed
-        /// </summary>
         public void TriggerVictoryViaReflection()
         {
             if (levelManager == null)

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ namespace Vampire
 {
     public class BossMonster : Monster
     {
-        protected new BossMonsterBlueprint monsterBlueprint;
+        [System.NonSerialized] protected new BossMonsterBlueprint monsterBlueprint;
         protected BossAbility[] abilities;
         protected Coroutine act = null;
         public Rigidbody2D Rigidbody { get => rb; }
@@ -31,12 +31,6 @@ namespace Vampire
             base.Update();
             timeSinceLastMeleeAttack += Time.deltaTime;
         }
-        // protected override void FixedUpdate()
-        // {
-        //     base.FixedUpdate();
-        //     // Vector2 moveDirection = (playerCharacter.transform.position - transform.position).normalized;
-        //     // rb.velocity += moveDirection * monsterBlueprint.acceleration * Time.fixedDeltaTime;
-        // }
 
         public void Move(Vector2 direction, float deltaTime)
         {
