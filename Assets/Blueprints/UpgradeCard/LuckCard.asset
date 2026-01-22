@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LuckCard
   m_EditorClassIdentifier: 
   upgradeName: Luck
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: aed20afa318ce9441b57cd2e5b8be67d, type: 3}
   statType: 5
   valuePerLevel: 3
   maxLevel: 5

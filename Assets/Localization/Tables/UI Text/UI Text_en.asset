@@ -23,15 +23,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1437881851904
-    m_Localized: Start
+    m_Localized: Play
     m_Metadata:
       m_Items: []
   - m_Id: 5889980358656
-    m_Localized: Achievements
+    m_Localized: Achievement
     m_Metadata:
       m_Items: []
   - m_Id: 6373831073792
-    m_Localized: Upgrades
+    m_Localized: Upgrade
     m_Metadata:
       m_Items: []
   - m_Id: 334637481058304
@@ -43,7 +43,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 208510190782263296
-    m_Localized: Settings
+    m_Localized: Setting
     m_Metadata:
       m_Items: []
   - m_Id: 208510588272259072

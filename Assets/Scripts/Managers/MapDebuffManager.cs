@@ -49,12 +49,9 @@ namespace Vampire
             
             if (currentMap.debuffs == null || currentMap.debuffs.Length == 0)
             {
-                Debug.Log($"Map '{currentMap.name}' has no debuffs");
                 debuffsApplied = true;
                 return;
             }
-
-            Debug.Log($"Applying {currentMap.debuffs.Length} debuffs for map '{currentMap.name}'");
 
             foreach (var debuff in currentMap.debuffs)
             {
@@ -70,37 +67,30 @@ namespace Vampire
             {
                 case MapDebuffType.ReducedHealth:
                     HealthMultiplier = debuff.multiplier;
-                    Debug.Log($"Applied ReducedHealth: {debuff.multiplier}x");
                     break;
 
                 case MapDebuffType.IncreasedEnemySpeed:
                     EnemySpeedMultiplier = debuff.multiplier;
-                    Debug.Log($"Applied IncreasedEnemySpeed: {debuff.multiplier}x");
                     break;
 
                 case MapDebuffType.IncreasedEnemyDamage:
                     EnemyDamageMultiplier = debuff.multiplier;
-                    Debug.Log($"Applied IncreasedEnemyDamage: {debuff.multiplier}x");
                     break;
 
                 case MapDebuffType.ReducedPlayerSpeed:
                     PlayerSpeedMultiplier = debuff.multiplier;
-                    Debug.Log($"Applied ReducedPlayerSpeed: {debuff.multiplier}x");
                     break;
 
                 case MapDebuffType.ReducedExpGain:
                     ExpGainMultiplier = debuff.multiplier;
-                    Debug.Log($"Applied ReducedExpGain: {debuff.multiplier}x");
                     break;
 
                 case MapDebuffType.IncreasedEnemySpawn:
                     EnemySpawnMultiplier = debuff.multiplier;
-                    Debug.Log($"Applied IncreasedEnemySpawn: {debuff.multiplier}x");
                     break;
 
                 case MapDebuffType.ReducedAbilityDamage:
                     AbilityDamageMultiplier = debuff.multiplier;
-                    Debug.Log($"Applied ReducedAbilityDamage: {debuff.multiplier}x");
                     break;
 
                 case MapDebuffType.None:

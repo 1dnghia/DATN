@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DamageCard
   m_EditorClassIdentifier: 
   upgradeName: Damage
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d12324e7f63831342878d0e2854d4125, type: 3}
   statType: 4
   valuePerLevel: 3
   maxLevel: 5

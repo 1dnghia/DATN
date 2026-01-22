@@ -15,7 +15,6 @@ namespace Vampire
         [SerializeField] private Transform mapCardsContainer;
         
         private MapCard[] mapCards;
-        private bool initialized = false;
         private CharacterBlueprint selectedCharacter;
         
         public MapBlueprint[] MapBlueprints => mapBlueprints;
@@ -25,8 +24,6 @@ namespace Vampire
         {
             selectedCharacter = character;
             InitializeMapCards();
-            
-            Debug.Log($"MapSelection initialized with character: {(character != null ? character.name : "null")}");
         }
 
         private void InitializeMapCards()
@@ -61,8 +58,6 @@ namespace Vampire
             {
                 LayoutRebuilder.ForceRebuildLayoutImmediate(mapCardsContainer.GetComponent<RectTransform>());
             }
-            
-            initialized = true;
         }
         
         public void StartGame(MapBlueprint mapBlueprint)
@@ -84,7 +79,6 @@ namespace Vampire
             CrossSceneData.CurrentMap = mapBlueprint;
             
             // Load scene của level blueprint
-            Debug.Log($"Starting game with character '{selectedCharacter.name}' on map '{mapBlueprint.name}' using level '{mapBlueprint.levelBlueprint.name}'");
             SceneManager.LoadScene(mapBlueprint.levelBlueprint.sceneName);
         }
 

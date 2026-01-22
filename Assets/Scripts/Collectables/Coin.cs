@@ -35,6 +35,11 @@ namespace Vampire
 
         protected override void OnCollected()
         {
+            // Add coins to CoinManager
+            int coinValue = (int)coinType;
+            CoinManager.Instance.AddCoins(coinValue);
+            
+            AudioManager.Instance.PlayCoinPickup();
             entityManager.DespawnCoin(this);
         }
     }

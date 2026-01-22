@@ -49,6 +49,10 @@ namespace Vampire
         
         private void Update()
         {
+            // Kiểm tra playerTransform đã được Init chưa
+            if (playerTransform == null)
+                return;
+            
             Vector2 toReset = previousResetPosition - (Vector2)playerTransform.position;
             if (toReset.sqrMagnitude > resetDistance * resetDistance)
             {

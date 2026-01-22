@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Vampire
@@ -27,9 +28,23 @@ namespace Vampire
 
         public virtual void Open()
         {
-            Debug.Log($"DialogBox.Open called on {gameObject.name}");
             gameObject.SetActive(true);
-            Debug.Log($"DialogBox.Open finished - Active: {gameObject.activeSelf}");
+            
+            // Force rebuild layout để fix lỗi hiển thị lần đầu
+            StartCoroutine(RebuildLayoutNextFrame());
+        }
+        
+        private IEnumerator RebuildLayoutNextFrame()
+        {
+            yield return null; // Đợi 1 frame
+            Canvas.ForceUpdateCanvases();
+            
+            // Rebuild tất cả layout groups trong dialog
+            var layoutGroups = GetComponentsInChildren<LayoutGroup>(true);
+            foreach (var layoutGroup in layoutGroups)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup.GetComponent<RectTransform>());
+            }
         }
 
         public virtual void Close()

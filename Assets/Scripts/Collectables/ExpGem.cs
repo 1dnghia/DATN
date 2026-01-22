@@ -43,6 +43,7 @@ namespace Vampire
 
         protected override void OnCollected()
         {
+            AudioManager.Instance.PlayGemPickup();
             spriteRenderer.enabled = false;
             playerCharacter.GainExp((float)gemType);
             entityManager.DespawnGem(this);

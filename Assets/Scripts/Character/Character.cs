@@ -108,8 +108,8 @@ namespace Vampire
             expBar.Setup(currentExp, 0, nextLevelExp);
             currentLevel = 1;
             UpdateLevelDisplay();
-            // Initialize animations
-            spriteAnimator.Init(characterBlueprint.walkSpriteSequence, characterBlueprint.walkFrameTime, false);
+            // Initialize animations (useGlobalTime = true để animation mượt hơn)
+            spriteAnimator.Init(characterBlueprint.walkSpriteSequence, characterBlueprint.walkFrameTime, true);
             
             // Limit max speed using drag with meta upgrade bonus (percentage)
             float moveSpeedBonus = metaUpgrades.ContainsKey(UpgradeStatType.MoveSpeed) ? metaUpgrades[UpgradeStatType.MoveSpeed] : 0;
@@ -152,9 +152,18 @@ namespace Vampire
         protected virtual void FixedUpdate()
         {
             if (moveDirection != Vector2.zero)
+            {
                 lookDirection = moveDirection;
+                // Chỉ bật animation nếu chưa đang chạy
+                if (!spriteAnimator.IsAnimating)
+                    StartWalkAnimation();
+            }
             else
+            {
+                // Dừng animation và hiển thị sprite đứng yên (frame đầu tiên)
                 StopWalkAnimation();
+            }
+            
             if (alive)
                 rb.linearVelocity += moveDirection * characterBlueprint.acceleration * Time.deltaTime;
         }
@@ -196,6 +205,7 @@ namespace Vampire
             if (alive)
             {
                 // Level up
+                AudioManager.Instance.PlayPlayerLevelUp();
                 currentLevel++;
                 UpdateLevelDisplay();
                 // Open the level up dialog menu
@@ -235,10 +245,12 @@ namespace Vampire
                 statsManager.IncreaseDamageTaken(damage);
                 if (currentHealth <= 0)
                 {
+                    AudioManager.Instance.PlayPlayerDeath();
                     StartCoroutine(DeathAnimation());
                 }
                 else
                 {
+                    AudioManager.Instance.PlayPlayerHit();
                     if (hitAnimationCoroutine != null) StopCoroutine(hitAnimationCoroutine);
                     hitAnimationCoroutine = StartCoroutine(HitAnimation());
                 }

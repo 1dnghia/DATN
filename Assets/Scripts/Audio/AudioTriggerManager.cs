@@ -4,17 +4,18 @@ using System.Collections.Generic;
 
 namespace Vampire
 {
-    // Manager để quản lý audio cho nhiều buttons từ 1 chỗ
+    // Manager để quản lý audio cho buttons trong scene (GameObject độc lập)
+    // Kéo thả buttons từ scene vào mảng để tự động setup audio
+    // Buttons trong prefab thì tự add AudioTrigger thủ công
     public class AudioTriggerManager : MonoBehaviour
     {
         [Header("Buttons to Manage")]
+        [Tooltip("Kéo thả các buttons từ scene vào đây để setup audio.")]
         [SerializeField] private Button[] buttons;
         
         [Header("Audio Settings")]
         [SerializeField] private bool playHoverSound = false;
         [SerializeField] private bool playClickSound = true;
-        [SerializeField] private AudioClip customHoverSound;
-        [SerializeField] private AudioClip customClickSound;
 
         private Dictionary<Button, AudioTrigger> buttonTriggers = new Dictionary<Button, AudioTrigger>();
 
@@ -23,11 +24,15 @@ namespace Vampire
             SetupAllButtons();
         }
 
-        // Tự động thêm AudioTrigger cho tất cả buttons
+        // Tự động thêm AudioTrigger cho các buttons đã gán
         private void SetupAllButtons()
         {
-            if (buttons == null) return;
-
+            if (buttons == null || buttons.Length == 0)
+            {
+                Debug.LogWarning("AudioTriggerManager: No buttons assigned!");
+                return;
+            }
+            
             foreach (Button button in buttons)
             {
                 if (button == null) continue;
@@ -40,81 +45,35 @@ namespace Vampire
                 }
 
                 // Set các thuộc tính từ manager
-                trigger.SetSettings(playHoverSound, playClickSound, customHoverSound, customClickSound);
+                trigger.SetSettings(playHoverSound, playClickSound);
                 
                 buttonTriggers[button] = trigger;
             }
-        }
-
-        // Thêm button mới vào danh sách quản lý
-        public void AddButton(Button button)
-        {
-            if (button == null || buttonTriggers.ContainsKey(button)) return;
-
-            AudioTrigger trigger = button.GetComponent<AudioTrigger>();
-            if (trigger == null)
-            {
-                trigger = button.gameObject.AddComponent<AudioTrigger>();
-            }
-
-            trigger.SetSettings(playHoverSound, playClickSound, customHoverSound, customClickSound);
-            buttonTriggers[button] = trigger;
-        }
-
-        // Xóa button khỏi danh sách quản lý
-        public void RemoveButton(Button button)
-        {
-            if (button == null || !buttonTriggers.ContainsKey(button)) return;
-
-            AudioTrigger trigger = buttonTriggers[button];
-            if (trigger != null)
-            {
-                Destroy(trigger);
-            }
-            buttonTriggers.Remove(button);
+            
+            Debug.Log($"AudioTriggerManager: Setup {buttons.Length} buttons");
         }
 
         // Update settings cho tất cả buttons
-        public void UpdateAllSettings(bool hover, bool click, AudioClip hoverClip = null, AudioClip clickClip = null)
+        public void UpdateAllSettings(bool hover, bool click)
         {
             playHoverSound = hover;
             playClickSound = click;
-            customHoverSound = hoverClip;
-            customClickSound = clickClip;
 
             foreach (var trigger in buttonTriggers.Values)
             {
                 if (trigger != null)
                 {
-                    trigger.SetSettings(playHoverSound, playClickSound, customHoverSound, customClickSound);
+                    trigger.SetSettings(playHoverSound, playClickSound);
                 }
             }
         }
 
         // Tự động tìm tất cả buttons trong children (Editor only)
-        [ContextMenu("Auto Find All Buttons")]
-        private void AutoFindButtons()
+        [ContextMenu("Refresh All Buttons")]
+        private void RefreshButtons()
         {
-            buttons = GetComponentsInChildren<Button>(true);
-            Debug.Log($"Found {buttons.Length} buttons");
-        }
-
-        // Clear tất cả AudioTriggers (Editor only)
-        [ContextMenu("Clear All Audio Triggers")]
-        private void ClearAllTriggers()
-        {
-            foreach (var button in buttons)
-            {
-                if (button == null) continue;
-                
-                AudioTrigger trigger = button.GetComponent<AudioTrigger>();
-                if (trigger != null)
-                {
-                    DestroyImmediate(trigger);
-                }
-            }
             buttonTriggers.Clear();
-            Debug.Log("Cleared all AudioTriggers");
+            SetupAllButtons();
         }
     }
 }

@@ -47,16 +47,15 @@ namespace Vampire
         // Start is called before the first frame update
         void Start()
         {
+            // Start gameplay music
+            AudioManager.Instance.PlayGameplayMusic();
 
             if (CrossSceneData.CurrentMap != null && CrossSceneData.CurrentMap.levelBlueprint != null)
             {
-                Debug.Log($"LevelManager: Using level blueprint from map '{CrossSceneData.CurrentMap.name}'");
                 Init(CrossSceneData.CurrentMap.levelBlueprint);
             }
             else
             {
-                
-                Debug.Log("LevelManager: Using level blueprint from Inspector");
                 Init(levelBlueprint);
             }
         }
@@ -110,6 +109,11 @@ namespace Vampire
 
         public void GameOver()
         {
+            AudioManager.Instance.PlayDefeatMusic();
+            
+            // Check achievements
+            CheckAchievements(false);
+            
             Time.timeScale = 0;
             int coinCount = PlayerPrefs.GetInt("Coins");
             PlayerPrefs.SetInt("Coins", coinCount + statsManager.CoinsGained);
@@ -118,6 +122,11 @@ namespace Vampire
 
         public void LevelPassed(Monster finalBossKilled)
         {
+            AudioManager.Instance.PlayVictoryMusic();
+            
+            // Check achievements
+            CheckAchievements(true);
+            
             Time.timeScale = 0;
             int coinCount = PlayerPrefs.GetInt("Coins");
             PlayerPrefs.SetInt("Coins", coinCount + statsManager.CoinsGained);
@@ -128,7 +137,6 @@ namespace Vampire
                 string mapCompletedKey = $"Map_{CrossSceneData.CurrentMap.name}_Completed";
                 PlayerPrefs.SetInt(mapCompletedKey, 1);
                 PlayerPrefs.Save();
-                Debug.Log($"Map '{CrossSceneData.CurrentMap.name}' completed and saved!");
             }
             
             gameOverDialog.Open(true, statsManager);
@@ -144,6 +152,24 @@ namespace Vampire
         {
             Time.timeScale = 1;
             SceneManager.LoadScene(0);
+        }
+        
+        // Check tất cả achievements sau khi kết thúc game
+        private void CheckAchievements(bool won)
+        {
+            AchievementManager achievementManager = FindFirstObjectByType<AchievementManager>();
+            if (achievementManager == null) return;
+            
+            string mapName = CrossSceneData.CurrentMap != null ? CrossSceneData.CurrentMap.name : "";
+            int playerLevel = playerCharacter.CurrentLevel;
+            float survivalTime = gameTimer.GetCurrentTime();
+            
+            achievementManager.CheckAllAchievements(
+                statsManager, 
+                playerLevel, 
+                survivalTime, 
+                won ? mapName : ""
+            );
         }
     }
 }

@@ -19,16 +19,12 @@ namespace Vampire
         {
             if (autoFindLevelManager && levelManager == null)
             {
-                levelManager = FindObjectOfType<LevelManager>();
+                levelManager = FindFirstObjectByType<LevelManager>();
             }
 
             if (levelManager == null)
             {
                 Debug.LogError("TestBossSpawn: LevelManager not found! Please assign it in the inspector.");
-            }
-            else
-            {
-                Debug.Log("TestBossSpawn: Press B to spawn boss, Press T to skip to boss time");
             }
         }
 
@@ -57,8 +53,6 @@ namespace Vampire
         /// Forces the boss to spawn immediately by manipulating the level time
         public void ForceSpawnBoss()
         {
-            Debug.Log("TestBossSpawn: Forcing boss spawn...");
-            
             // Use reflection to set the private levelTime field
             var levelTimeField = typeof(LevelManager).GetField("levelTime", 
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -75,7 +69,6 @@ namespace Vampire
                     // Set levelTime to just past the boss spawn time
                     float bossSpawnTime = levelBlueprint.levelTime + 0.1f;
                     levelTimeField.SetValue(levelManager, bossSpawnTime);
-                    Debug.Log($"TestBossSpawn: Set level time to {bossSpawnTime}. Boss should spawn in next Update!");
                 }
                 else
                 {
@@ -90,15 +83,12 @@ namespace Vampire
         /// Skips time to the configured skip time (default: boss spawn time)
         public void SkipToBossTime()
         {
-            Debug.Log($"TestBossSpawn: Skipping to time {skipToTime}...");
-            
             var levelTimeField = typeof(LevelManager).GetField("levelTime", 
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
             if (levelTimeField != null)
             {
                 levelTimeField.SetValue(levelManager, skipToTime);
-                Debug.Log($"TestBossSpawn: Time set to {skipToTime} seconds");
             }
             else
             {
@@ -123,8 +113,6 @@ namespace Vampire
                 {
                     float bossTime = levelBlueprint.levelTime;
                     float timeRemaining = bossTime - currentTime;
-                    
-                    Debug.Log($"TestBossSpawn: Current Time = {currentTime:F1}s | Boss Spawn Time = {bossTime:F1}s | Time Remaining = {timeRemaining:F1}s");
                 }
             }
         }
@@ -139,7 +127,6 @@ namespace Vampire
                 float currentTime = (float)levelTimeField.GetValue(levelManager);
                 float newTime = currentTime + seconds;
                 levelTimeField.SetValue(levelManager, newTime);
-                Debug.Log($"TestBossSpawn: Added {seconds}s. New time: {newTime:F1}s");
             }
         }
     }

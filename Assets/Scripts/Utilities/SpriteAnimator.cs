@@ -18,7 +18,9 @@ namespace Vampire
         private int currSequenceFrame = 0;
         private bool useGlobalTime;
         private float animationTime;
+        
         public SpriteRenderer SpriteRenderer { get => spriteRenderer; }
+        public bool IsAnimating { get => animating; }
 
         void Awake()
         {
@@ -48,8 +50,13 @@ namespace Vampire
 
         public void StopAnimation(bool reset = false)
         {
-            if (reset) Setup();
             animating = false;
+            if (reset)
+            {
+                // Reset về frame đầu tiên (idle sprite)
+                currSequenceFrame = 0;
+                spriteRenderer.sprite = spriteSequence[0];
+            }
         }
 
         public void StartAnimating(bool reset = false)
@@ -60,8 +67,13 @@ namespace Vampire
 
         public void StopAnimating(bool reset = false)
         {
-            if (reset) Setup();
             animating = false;
+            if (reset)
+            {
+                // Reset về frame đầu tiên (idle sprite)
+                currSequenceFrame = 0;
+                spriteRenderer.sprite = spriteSequence[0];
+            }
         }
 
         void Update()

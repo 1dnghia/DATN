@@ -109,6 +109,7 @@ namespace Vampire
         {
             if (alive)
             {
+                AudioManager.Instance.PlayEnemyHit();
                 entityManager.SpawnDamageText(monsterHitbox.transform.position, damage);
                 currentHealth -= damage;
                 if (hitAnimationCoroutine != null) StopCoroutine(hitAnimationCoroutine);
@@ -135,6 +136,7 @@ namespace Vampire
         public virtual IEnumerator Killed(bool killedByPlayer = true)
         {
             // Toggle alive flag off and disable hitbox
+            AudioManager.Instance.PlayEnemyDeath();
             alive = false;
             monsterHitbox.enabled = false;
             // Remove from list of living monsters

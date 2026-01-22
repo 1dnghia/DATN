@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,12 +21,114 @@ namespace Vampire
         
         private MonsterBlueprint[] allMonsters;
         private GameObject[] allWeapons;
+        private bool isInitialized = false;
+        private bool isDataCollected = false;
 
-        private void Start()
+        private void Awake()
         {
-            CollectDataFromMaps();
+            // Không gọi CollectDataFromMaps ở đây nữa
+        }
+        
+        private void OnEnable()
+        {
+            if (!isInitialized)
+            {
+                StartCoroutine(InitializeCollectionsDelayed());
+            }
+            else
+            {
+                // Nếu đã init rồi, chỉ cần rebuild layout
+                StartCoroutine(RebuildLayoutDelayed());
+            }
+        }
+        
+        private IEnumerator InitializeCollectionsDelayed()
+        {
+            // Đợi end of frame để đảm bảo dialog đã active hoàn toàn
+            yield return new WaitForEndOfFrame();
+            
+            // Thu thập data từ maps trước (chỉ làm 1 lần)
+            if (!isDataCollected)
+            {
+                CollectDataFromMaps();
+                isDataCollected = true;
+            }
+            
+            // Đợi thêm 1 frame sau khi collect data
+            yield return null;
+            
             InitializeMonsterCollection();
             InitializeWeaponCollection();
+            
+            isInitialized = true;
+            
+            // Force update canvas và rebuild layout nhiều lần để chắc chắn
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            
+            // Rebuild layout cho cả parent và child
+            if (monsterCardsContainer != null)
+            {
+                RectTransform containerRect = monsterCardsContainer.GetComponent<RectTransform>();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+                
+                // Rebuild parent nếu có ScrollRect
+                RectTransform parentRect = containerRect.parent as RectTransform;
+                if (parentRect != null)
+                {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                }
+            }
+            
+            if (weaponCardsContainer != null)
+            {
+                RectTransform containerRect = weaponCardsContainer.GetComponent<RectTransform>();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+                
+                // Rebuild parent nếu có ScrollRect
+                RectTransform parentRect = containerRect.parent as RectTransform;
+                if (parentRect != null)
+                {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                }
+            }
+            
+            // Force update lần cuối
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+        }
+        
+        private IEnumerator RebuildLayoutDelayed()
+        {
+            yield return new WaitForEndOfFrame();
+            Canvas.ForceUpdateCanvases();
+            
+            if (monsterCardsContainer != null)
+            {
+                RectTransform containerRect = monsterCardsContainer.GetComponent<RectTransform>();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+                
+                RectTransform parentRect = containerRect.parent as RectTransform;
+                if (parentRect != null)
+                {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                }
+            }
+            
+            if (weaponCardsContainer != null)
+            {
+                RectTransform containerRect = weaponCardsContainer.GetComponent<RectTransform>();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+                
+                RectTransform parentRect = containerRect.parent as RectTransform;
+                if (parentRect != null)
+                {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                }
+            }
+            
+            yield return null;
+            Canvas.ForceUpdateCanvases();
         }
 
         private void CollectDataFromMaps()
@@ -97,8 +200,6 @@ namespace Vampire
 
             allMonsters = monsterSet.ToArray();
             allWeapons = weaponSet.ToArray();
-
-            Debug.Log($"CollectionManager: Collected {allMonsters.Length} unique monsters and {allWeapons.Length} unique weapons");
         }
 
         private void InitializeMonsterCollection()

@@ -1,44 +1,36 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Vampire
 {
-    // Component nhẹ để bắt sự kiện hover/click cho button
-    // Được quản lý bởi AudioTriggerManager
+    // Component để bắt sự kiện hover/click cho button
+    // - Dùng độc lập: Gắn trực tiếp vào button prefab và config trong Inspector
+    // - Dùng với Manager: AudioTriggerManager sẽ tự động setup cho buttons trong scene
+    [RequireComponent(typeof(Button))]
     public class AudioTrigger : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
     {
-        private bool playOnHover = false;
-        private bool playOnClick = true;
-        private AudioClip hoverSound;
-        private AudioClip clickSound;
+        [Header("Audio Settings")]
+        [SerializeField] private bool playOnHover = false;
+        [SerializeField] private bool playOnClick = true;
 
         // AudioTriggerManager gọi method này để config
-        public void SetSettings(bool hover, bool click, AudioClip hoverClip = null, AudioClip clickClip = null)
+        public void SetSettings(bool hover, bool click)
         {
             playOnHover = hover;
             playOnClick = click;
-            hoverSound = hoverClip;
-            clickSound = clickClip;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!playOnHover) return;
-
-            if (hoverSound != null)
-                AudioManager.Instance.PlaySFX(hoverSound);
-            else
-                AudioManager.Instance.PlayButtonHover();
+            AudioManager.Instance.PlayButtonHover();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (!playOnClick) return;
-
-            if (clickSound != null)
-                AudioManager.Instance.PlaySFX(clickSound);
-            else
-                AudioManager.Instance.PlayButtonClick();
+            AudioManager.Instance.PlayButtonClick();
         }
     }
 }

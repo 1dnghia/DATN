@@ -14,7 +14,7 @@ namespace Vampire
         {
             if (autoFindLevelManager && levelManager == null)
             {
-                levelManager = FindObjectOfType<LevelManager>();
+                levelManager = FindFirstObjectByType<LevelManager>();
             }
 
             if (levelManager == null)
@@ -39,8 +39,6 @@ namespace Vampire
                 Debug.LogError("TestVictory: Cannot trigger victory - LevelManager is null!");
                 return;
             }
-
-            Debug.Log("TestVictory: Triggering victory condition...");
             
             // Call LevelPassed with null (since we don't have a real boss monster)
             // Note: LevelPassed expects a Monster parameter but doesn't actually use it
@@ -54,8 +52,6 @@ namespace Vampire
                 Debug.LogError("TestVictory: Cannot trigger victory - LevelManager is null!");
                 return;
             }
-
-            Debug.Log("TestVictory: Triggering victory via reflection...");
             
             var method = typeof(LevelManager).GetMethod("LevelPassed", 
                 System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);

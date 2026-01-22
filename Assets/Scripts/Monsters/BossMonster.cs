@@ -60,7 +60,6 @@ namespace Vampire
                 }
                 if (abilityIndex == -1)
                 {
-                    Debug.Log(totalScore);
                     yield return new WaitForSeconds(1);
                 }
                 else

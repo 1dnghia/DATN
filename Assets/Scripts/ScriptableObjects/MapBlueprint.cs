@@ -21,7 +21,7 @@ namespace Vampire
     public class MapDebuff
     {
         public MapDebuffType type;
-        [Range(0.1f, 0.9f)]
+        [Range(0.1f, 2.0f)]
         public float multiplier = 0.8f; // 0.8 = giảm 20%, 1.2 = tăng 20%
         
         [TextArea(2, 3)]

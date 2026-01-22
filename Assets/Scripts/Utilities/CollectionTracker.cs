@@ -13,7 +13,6 @@ namespace Vampire
             {
                 PlayerPrefs.SetInt(unlockKey, 1);
                 PlayerPrefs.Save();
-                Debug.Log($"Collection: Unlocked monster '{monster.name}'");
             }
         }
 
@@ -26,7 +25,6 @@ namespace Vampire
             {
                 PlayerPrefs.SetInt(unlockKey, 1);
                 PlayerPrefs.Save();
-                Debug.Log($"Collection: Unlocked weapon '{abilityName}'");
             }
         }
 
@@ -48,7 +46,6 @@ namespace Vampire
         {
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
-            Debug.Log("Collection: Reset all unlocks");
         }
     }
 }

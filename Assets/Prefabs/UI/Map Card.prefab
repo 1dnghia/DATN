@@ -154,7 +154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &3748897372937633925
@@ -287,14 +287,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c788c74c6d2a844b35587fc2a674b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundImage: {fileID: 6343078611666167470}
   nameText: {fileID: 5110698696449977002}
   mapPreviewImage: {fileID: 9022708881810847422}
   selectButton: {fileID: 8027293233085987203}
   lockOverlay: {fileID: 1156629229061121113}
   lockOverlayColor: {r: 0, g: 0, b: 0, a: 0.7}
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
-  lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &8267101998485674858
 GameObject:
   m_ObjectHideFlags: 0

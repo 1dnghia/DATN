@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26852c8866df8e34d882702ce00ed56f, type: 3}
   m_Name: Map 1
   m_EditorClassIdentifier: 
-  name: Map 1
-  mapPreview: {fileID: 1685016755, guid: a1934d8b81b1b463789e100d3936db4f, type: 3}
-  levelBlueprint: {fileID: 11400000, guid: 3c61f9287277ccf468c43772e091fee6, type: 2}
+  name: Cursed Lands
+  mapPreview: {fileID: 21300000, guid: 3e550b6787833af4c85c9dea6dafbbda, type: 3}
+  levelBlueprint: {fileID: 11400000, guid: ace7cd4ef65de4d9787fe14e2a0f8c92, type: 2}
   requiredMap: {fileID: 0}
-  debuffs: []
+  debuffs:
+  - type: 0
+    multiplier: 0.1
+    description: 

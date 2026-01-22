@@ -25,15 +25,24 @@ namespace Vampire
         [SerializeField] private DialogBox mapSelectionDialogBox;
         [SerializeField] private MapSelection mapSelection;
         
+        [Header("Settings")]
+        [SerializeField] private SettingsMenuPanel settingsMenuPanel;
+        
         [Header("Button-Page Mappings")]
-        [Tooltip("Danh sÃ¡ch cÃ¡c button vÃ  page tÆ°Æ¡ng á»©ng")]
+        [Tooltip("Danh sÃ¡ch cÃ¡c button vÃ  page tÆ°Æ¡ng á»©ng")]
         [SerializeField] private List<ButtonPageMapping> buttonPageMappings = new List<ButtonPageMapping>();
         
         [Header("Exit Button")]
         [SerializeField] private Button exitButton;
+        
+        [Header("Settings Button")]
+        [SerializeField] private Button settingsButton;
 
         void Start()
         {
+            // Start main menu music
+            AudioManager.Instance.PlayMainMenuMusic();
+            
             if (characterSelector != null)
                 characterSelector.Init();
             
@@ -64,6 +73,10 @@ namespace Vampire
             // Subscribe to exit button
             if (exitButton != null)
                 exitButton.onClick.AddListener(QuitGame);
+            
+            // Subscribe to settings button
+            if (settingsButton != null)
+                settingsButton.onClick.AddListener(OpenSettings);
         }
 
         private void UnsubscribeFromButtons()
@@ -78,6 +91,10 @@ namespace Vampire
             // Unsubscribe from exit button
             if (exitButton != null)
                 exitButton.onClick.RemoveAllListeners();
+            
+            // Unsubscribe from settings button
+            if (settingsButton != null)
+                settingsButton.onClick.RemoveAllListeners();
         }
 
         #region Page Navigation
@@ -129,8 +146,6 @@ namespace Vampire
         /// Show map selection page with selected character
         public void ShowMapSelectionPage(CharacterBlueprint selectedCharacter)
         {
-            Debug.Log("MainMenu: ShowMapSelectionPage called with character: " + (selectedCharacter != null ? selectedCharacter.name : "null"));
-            
             // Hide all pages
             HideAllPages();
             
@@ -181,12 +196,27 @@ namespace Vampire
         /// Quit the game
         public void QuitGame()
         {
-            Debug.Log("MainMenu: Quitting game...");
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
+        }
+        
+        /// <summary>
+        /// Mở Settings Panel (được gọi từ Settings Button)
+        /// </summary>
+        public void OpenSettings()
+        {
+            if (settingsMenuPanel != null)
+            {
+                settingsMenuPanel.OpenSettingsMenu();
+                AudioManager.Instance.PlayButtonClick();
+            }
+            else
+            {
+                Debug.LogError("MainMenu: SettingsMenuPanel reference is missing!");
+            }
         }
 
         #endregion

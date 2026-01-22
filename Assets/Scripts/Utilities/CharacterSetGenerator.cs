@@ -33,7 +33,6 @@ namespace Vampire
             }
             // Save it to character set
             File.WriteAllText(_characterSetFilePath, stringBuilder.ToString());
-            Debug.Log("Character Set Generated!");
         }
     }
 }

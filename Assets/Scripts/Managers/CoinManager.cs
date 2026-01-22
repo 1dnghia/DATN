@@ -53,6 +53,7 @@ namespace Vampire
             if (amount <= 0) return;
             
             currentCoins += amount;
+            Debug.Log($"[CoinManager] Nhặt được {amount} coins. Tổng coins hiện tại: {currentCoins}");
             SaveCoins();
             OnCoinChanged?.Invoke(currentCoins);
         }

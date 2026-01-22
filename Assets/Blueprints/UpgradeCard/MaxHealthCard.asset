@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MaxHealthCard
   m_EditorClassIdentifier: 
   upgradeName: Max Health
-  icon: {fileID: 21300000, guid: 2564366b0db3b442f96b7d83cc9db628, type: 3}
+  icon: {fileID: 21300000, guid: 88660eaebe3a9f24d8bb16382d5eb2a0, type: 3}
   statType: 0
   valuePerLevel: 3
   maxLevel: 5

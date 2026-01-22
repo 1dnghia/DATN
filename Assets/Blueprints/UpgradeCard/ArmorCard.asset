@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ArmorCard
   m_EditorClassIdentifier: 
   upgradeName: Armor
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b6b504b40858b174aa0386ef9f753b71, type: 3}
   statType: 2
   valuePerLevel: 3
   maxLevel: 5
