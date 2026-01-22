@@ -44,9 +44,6 @@ namespace Vampire
         
         private IEnumerator InitializeCollectionsDelayed()
         {
-            // Đợi end of frame để đảm bảo dialog đã active hoàn toàn
-            yield return new WaitForEndOfFrame();
-            
             // Thu thập data từ maps trước (chỉ làm 1 lần)
             if (!isDataCollected)
             {
@@ -54,7 +51,8 @@ namespace Vampire
                 isDataCollected = true;
             }
             
-            // Đợi thêm 1 frame sau khi collect data
+            // Đợi 2 frames để đảm bảo GameObject đã active hoàn toàn
+            yield return null;
             yield return null;
             
             InitializeMonsterCollection();
@@ -62,34 +60,61 @@ namespace Vampire
             
             isInitialized = true;
             
-            // Force update canvas và rebuild layout nhiều lần để chắc chắn
+            // Đợi thêm để các card được instantiate hoàn toàn
+            yield return null;
+            
+            // Force update canvas nhiều lần
+            Canvas.ForceUpdateCanvases();
             yield return null;
             Canvas.ForceUpdateCanvases();
             
-            // Rebuild layout cho cả parent và child
+            // Rebuild layout cho content containers
             if (monsterCardsContainer != null)
             {
                 RectTransform containerRect = monsterCardsContainer.GetComponent<RectTransform>();
                 LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
-                
-                // Rebuild parent nếu có ScrollRect
-                RectTransform parentRect = containerRect.parent as RectTransform;
-                if (parentRect != null)
-                {
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
-                }
             }
             
             if (weaponCardsContainer != null)
             {
                 RectTransform containerRect = weaponCardsContainer.GetComponent<RectTransform>();
                 LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
-                
-                // Rebuild parent nếu có ScrollRect
+            }
+            
+            // Đợi thêm và rebuild parent (ScrollRect viewport)
+            yield return null;
+            
+            if (monsterCardsContainer != null)
+            {
+                RectTransform containerRect = monsterCardsContainer.GetComponent<RectTransform>();
                 RectTransform parentRect = containerRect.parent as RectTransform;
                 if (parentRect != null)
                 {
                     LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                    
+                    // Rebuild cả ông nội (ScrollView root)
+                    RectTransform grandParentRect = parentRect.parent as RectTransform;
+                    if (grandParentRect != null)
+                    {
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(grandParentRect);
+                    }
+                }
+            }
+            
+            if (weaponCardsContainer != null)
+            {
+                RectTransform containerRect = weaponCardsContainer.GetComponent<RectTransform>();
+                RectTransform parentRect = containerRect.parent as RectTransform;
+                if (parentRect != null)
+                {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                    
+                    // Rebuild cả ông nội (ScrollView root)
+                    RectTransform grandParentRect = parentRect.parent as RectTransform;
+                    if (grandParentRect != null)
+                    {
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(grandParentRect);
+                    }
                 }
             }
             
@@ -100,7 +125,9 @@ namespace Vampire
         
         private IEnumerator RebuildLayoutDelayed()
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
+            yield return null;
+            
             Canvas.ForceUpdateCanvases();
             
             if (monsterCardsContainer != null)
@@ -112,6 +139,12 @@ namespace Vampire
                 if (parentRect != null)
                 {
                     LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                    
+                    RectTransform grandParentRect = parentRect.parent as RectTransform;
+                    if (grandParentRect != null)
+                    {
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(grandParentRect);
+                    }
                 }
             }
             
@@ -124,6 +157,12 @@ namespace Vampire
                 if (parentRect != null)
                 {
                     LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+                    
+                    RectTransform grandParentRect = parentRect.parent as RectTransform;
+                    if (grandParentRect != null)
+                    {
+                        LayoutRebuilder.ForceRebuildLayoutImmediate(grandParentRect);
+                    }
                 }
             }
             

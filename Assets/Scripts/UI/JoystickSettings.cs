@@ -18,7 +18,7 @@ namespace Vampire
         
         [Header("UI Customization")]
         [SerializeField] private Button customizeUIButton;
-        [SerializeField] private UICustomizationPanel uiCustomizationPanel;
+        [SerializeField] private GameObject uiCustomizationPanel;
         
         [Header("Labels (Optional)")]
         [SerializeField] private TextMeshProUGUI currentTypeLabel;
@@ -178,17 +178,17 @@ namespace Vampire
 
         private void OnCustomizeUIClicked()
         {
-            Debug.Log("JoystickSettings: Customize UI button clicked!");
-            
             // Mở UI Customization Panel
             if (uiCustomizationPanel != null)
             {
-                Debug.Log("JoystickSettings: Opening UICustomizationPanel...");
-                uiCustomizationPanel.OpenCustomization();
-            }
-            else
-            {
-                Debug.LogError("JoystickSettings: UICustomizationPanel is NULL! Please assign it in Inspector.");
+                uiCustomizationPanel.SetActive(true);
+                
+                // Initialize customizer
+                var customizer = uiCustomizationPanel.GetComponent<UILayoutCustomizer>();
+                if (customizer != null)
+                {
+                    customizer.EnterCustomizationMode();
+                }
             }
 
             AudioManager.Instance.PlayButtonClick();

@@ -1,0 +1,117 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+namespace Vampire
+{
+    /// <summary>
+    /// Load vị trí đã customize cho Joystick và 4 Inventory Slots THẬT trong Gameplay
+    /// ⚠️ QUAN TRỌNG: Anchor Presets phải GIỐNG NHAU giữa preview (Main Menu) và thật (Gameplay)
+    /// </summary>
+    public class InventoryPositionLoader : MonoBehaviour
+    {
+        [Header("Joystick THẬT trong Gameplay (Fixed mode only)")]
+        [SerializeField] private RectTransform joystickTransform;
+        
+        [Header("4 Inventory Slots THẬT trong Gameplay")]
+        [SerializeField] private List<RectTransform> inventorySlots = new List<RectTransform>();
+        
+        private const string JOYSTICK_POS_X = "JoystickPosX";
+        private const string JOYSTICK_POS_Y = "JoystickPosY";
+        private const string INVENTORY_SLOT_PREFIX = "InventorySlot";
+        private const string POS_X_SUFFIX = "_PosX";
+        private const string POS_Y_SUFFIX = "_PosY";
+
+    private Canvas canvas;
+    private RectTransform canvasRectTransform;
+
+        /// <summary>
+        /// Load vị trí từ PlayerPrefs và apply cho Joystick + Slots thật
+        /// </summary>
+        private void LoadSavedPositions()
+        {
+            // Load Joystick position (chỉ khi Fixed mode)
+            LoadJoystickPosition();
+            
+            // Load Inventory Slots positions
+            LoadInventorySlotsPositions();
+        }
+
+        private void LoadJoystickPosition()
+        {
+            if (joystickTransform == null)
+                return;
+
+            if (PlayerPrefs.HasKey(JOYSTICK_POS_X) && PlayerPrefs.HasKey(JOYSTICK_POS_Y))
+            {
+                float x = PlayerPrefs.GetFloat(JOYSTICK_POS_X);
+                float y = PlayerPrefs.GetFloat(JOYSTICK_POS_Y);
+                
+                joystickTransform.anchoredPosition = new Vector2(x, y);
+            }
+
+        }
+
+        private void LoadInventorySlotsPositions()
+        {
+            if (inventorySlots == null || inventorySlots.Count == 0)
+            {
+                Debug.LogWarning("InventoryPositionLoader: No inventory slots assigned!");
+                return;
+            }
+
+            // Remove nulls
+            inventorySlots.RemoveAll(slot => slot == null);
+
+            // Auto sort theo tên
+            inventorySlots.Sort((a, b) =>
+            {
+                int indexA = ExtractSlotIndex(a.name);
+                int indexB = ExtractSlotIndex(b.name);
+                
+                if (indexA >= 0 && indexB >= 0)
+                    return indexA.CompareTo(indexB);
+                
+                return string.Compare(a.name, b.name, System.StringComparison.Ordinal);
+            });
+
+            // Load positions từ PlayerPrefs
+            for (int i = 0; i < inventorySlots.Count && i < 4; i++)
+            {
+                string keyX = INVENTORY_SLOT_PREFIX + i + POS_X_SUFFIX;
+                string keyY = INVENTORY_SLOT_PREFIX + i + POS_Y_SUFFIX;
+
+                if (PlayerPrefs.HasKey(keyX) && PlayerPrefs.HasKey(keyY))
+                {
+                    float x = PlayerPrefs.GetFloat(keyX);
+                    float y = PlayerPrefs.GetFloat(keyY);
+                    
+                    // Apply vị trí cho slot thật
+                    inventorySlots[i].anchoredPosition = new Vector2(x, y);
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Extract slot index từ tên GameObject
+        /// </summary>
+        private int ExtractSlotIndex(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return -1;
+            
+            for (int i = name.Length - 1; i >= 0; i--)
+            {
+                if (char.IsDigit(name[i]))
+                {
+                    if (int.TryParse(name[i].ToString(), out int index))
+                    {
+                        return index;
+                    }
+                }
+            }
+            
+            return -1;
+        }
+    }
+}
