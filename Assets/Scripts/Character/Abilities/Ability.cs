@@ -21,10 +21,12 @@ namespace Vampire
         protected int level = 0;
         protected int maxLevel;
         protected bool owned = false;
+        protected string prefabName = "";
         public int Level { get => level; }
         public bool Owned { get => owned; }
         public Sprite Image { get => image; }
         public string Name { get => localizedName.GetLocalizedString(); }
+        public string PrefabName { get => prefabName; }
         public float DropWeight { get => (float)rarity; }
         public virtual string Description 
         { 
@@ -58,6 +60,13 @@ namespace Vampire
             {
                 owned = true;
                 Use();
+                
+                // Track weapon for collection (khi player chọn ability lần đầu)
+                string abilityName = Name;
+                if (!string.IsNullOrEmpty(abilityName))
+                {
+                    CollectionTracker.UnlockWeapon(abilityName);
+                }
             }
             else
             {

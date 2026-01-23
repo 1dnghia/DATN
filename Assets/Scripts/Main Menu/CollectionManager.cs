@@ -11,6 +11,9 @@ namespace Vampire
         [Header("Map Data Source")]
         [SerializeField] private MapSelection mapSelection;
         
+        [Header("Character Data Source")]
+        [SerializeField] private CharacterSelector characterSelector;
+        
         [Header("Monster Collection")]
         [SerializeField] private GameObject monsterCardPrefab;
         [SerializeField] private Transform monsterCardsContainer;
@@ -224,7 +227,7 @@ namespace Vampire
                     monsterSet.Add(levelBlueprint.finalBoss.bossBlueprint);
                 }
 
-                // Thu thập abilities/weapons
+                // Thu thập abilities/weapons từ level
                 if (levelBlueprint.abilityPrefabs != null)
                 {
                     foreach (var ability in levelBlueprint.abilityPrefabs)
@@ -236,9 +239,48 @@ namespace Vampire
                     }
                 }
             }
+            
+            // Thu thập starting abilities từ tất cả characters
+            if (characterSelector != null)
+            {
+                CharacterBlueprint[] characters = GetCharacterBlueprints();
+                if (characters != null)
+                {
+                    foreach (var character in characters)
+                    {
+                        if (character != null && character.startingAbilities != null)
+                        {
+                            foreach (var ability in character.startingAbilities)
+                            {
+                                if (ability != null)
+                                {
+                                    weaponSet.Add(ability);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             allMonsters = monsterSet.ToArray();
             allWeapons = weaponSet.ToArray();
+        }
+        
+        // Lấy CharacterBlueprint[] từ CharacterSelector bằng reflection
+        private CharacterBlueprint[] GetCharacterBlueprints()
+        {
+            if (characterSelector == null) return null;
+            
+            var field = typeof(CharacterSelector).GetField("characterBlueprints", 
+                System.Reflection.BindingFlags.NonPublic | 
+                System.Reflection.BindingFlags.Instance);
+            
+            if (field != null)
+            {
+                return field.GetValue(characterSelector) as CharacterBlueprint[];
+            }
+            
+            return null;
         }
 
         private void InitializeMonsterCollection()

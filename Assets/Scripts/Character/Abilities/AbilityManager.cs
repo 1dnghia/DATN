@@ -46,11 +46,13 @@ namespace Vampire
             {
                 Ability ability = Instantiate(abilityPrefab, transform).GetComponent<Ability>();
                 ability.Init(abilityManager, entityManager, playerCharacter);
-                ability.Select();
+                // Set prefab name for collection tracking
+                typeof(Ability).GetField("prefabName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(ability, abilityPrefab.name);
+                ability.Select(); // Select() sẽ tự động unlock weapon
                 ownedAbilities.Add(ability);
                 
-                // Track weapon for collection
-                CollectionTracker.UnlockWeapon(abilityPrefab.name);
+                // Unlock starting weapon ngay lập tức để đảm bảo (sau khi localization đã sẵn sàng)
+                StartCoroutine(UnlockStartingWeaponDelayed(ability));
             }
             
             newAbilities = new WeightedAbilities();
@@ -61,6 +63,8 @@ namespace Vampire
                 
                 Ability ability = Instantiate(abilityPrefab, transform).GetComponent<Ability>();
                 ability.Init(abilityManager, entityManager, playerCharacter);
+                // Set prefab name for collection tracking
+                typeof(Ability).GetField("prefabName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(ability, abilityPrefab.name);
                 newAbilities.Add(ability);
             }
         }
@@ -251,6 +255,18 @@ namespace Vampire
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+        }
+        
+        private IEnumerator UnlockStartingWeaponDelayed(Ability ability)
+        {
+            // Đợi 1 frame để đảm bảo localization đã load
+            yield return null;
+            
+            string abilityName = ability.Name;
+            if (!string.IsNullOrEmpty(abilityName))
+            {
+                CollectionTracker.UnlockWeapon(abilityName);
             }
         }
     }

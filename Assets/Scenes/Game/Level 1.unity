@@ -200,7 +200,6 @@ GameObject:
   m_Component:
   - component: {fileID: 27198615}
   - component: {fileID: 27198616}
-  - component: {fileID: 27198617}
   m_Layer: 5
   m_Name: Inventory Buttons
   m_TagString: Untagged
@@ -251,18 +250,6 @@ MonoBehaviour:
   - {fileID: 813137308}
   - {fileID: 322022559}
   - {fileID: 2082455970}
---- !u!114 &27198617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 27198614}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fc6f9417864fa64c9190933e1ea6781, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &31454351
 GameObject:
   m_ObjectHideFlags: 0
@@ -3559,7 +3546,7 @@ MonoBehaviour:
   fixedOnTouchToggle: {fileID: 1424287760}
   toggleGroup: {fileID: 0}
   customizeUIButton: {fileID: 766813612}
-  uiCustomizationPanel: {fileID: 925247196}
+  uiCustomizationPanel: {fileID: 0}
   currentTypeLabel: {fileID: 0}
 --- !u!114 &501716581
 MonoBehaviour:
@@ -11858,33 +11845,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5374971377736345871, guid: a40f5fc193e064471aec9d5d24f92174, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1612043957}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8902017675851470149, guid: a40f5fc193e064471aec9d5d24f92174, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 925247196}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a40f5fc193e064471aec9d5d24f92174, type: 3}
 --- !u!224 &925247193 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5374971377736345871, guid: a40f5fc193e064471aec9d5d24f92174, type: 3}
   m_PrefabInstance: {fileID: 925247192}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &925247195 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8902017675851470149, guid: a40f5fc193e064471aec9d5d24f92174, type: 3}
-  m_PrefabInstance: {fileID: 925247192}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &925247196
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 925247195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae3f6af64de73ff46950aa80029ede0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &928073264
 GameObject:
   m_ObjectHideFlags: 0
@@ -26156,6 +26123,7 @@ MonoBehaviour:
   statsManager: {fileID: 1845134363}
   gameOverDialog: {fileID: 1042722128}
   gameTimer: {fileID: 2096653587}
+  achievementData: {fileID: 11400000, guid: 3916ff59a98dc964d9507bd5c4e20658, type: 2}
 --- !u!1 &1770745749
 GameObject:
   m_ObjectHideFlags: 0
@@ -27389,7 +27357,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8902017675851470149, guid: a40f5fc193e064471aec9d5d24f92174, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

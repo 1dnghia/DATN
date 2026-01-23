@@ -15,6 +15,10 @@ namespace Vampire
         [SerializeField] private StatsManager statsManager;
         [SerializeField] private GameOverDialog gameOverDialog;
         [SerializeField] private GameTimer gameTimer;
+        
+        [Header("Achievement System")]
+        [SerializeField] private AchievementData achievementData; // Reference đến AchievementData SO
+        
         private float levelTime = 0;
         private float timeSinceLastMonsterSpawned;
         private float timeSinceLastChestSpawned;
@@ -157,19 +161,67 @@ namespace Vampire
         // Check tất cả achievements sau khi kết thúc game
         private void CheckAchievements(bool won)
         {
-            AchievementManager achievementManager = FindFirstObjectByType<AchievementManager>();
-            if (achievementManager == null) return;
+            if (achievementData == null)
+            {
+                Debug.LogWarning("LevelManager: AchievementData is null, cannot check achievements");
+                return;
+            }
             
             string mapName = CrossSceneData.CurrentMap != null ? CrossSceneData.CurrentMap.name : "";
             int playerLevel = playerCharacter.CurrentLevel;
             float survivalTime = gameTimer.GetCurrentTime();
             
-            achievementManager.CheckAllAchievements(
-                statsManager, 
-                playerLevel, 
-                survivalTime, 
-                won ? mapName : ""
-            );
+            // Check tất cả achievements từ AchievementData
+            foreach (var achievement in achievementData.achievements)
+            {
+                string achievementId = achievement.GetId();
+                
+                // Check nếu chưa unlock
+                if (PlayerPrefs.GetInt($"Achievement_{achievementId}", 0) == 0)
+                {
+                    // Check điều kiện
+                    if (achievement.CheckCondition(statsManager, playerLevel, survivalTime, won ? mapName : ""))
+                    {
+                        // Unlock achievement
+                        PlayerPrefs.SetInt($"Achievement_{achievementId}", 1);
+                        PlayerPrefs.Save();
+                        Debug.Log($"Achievement Unlocked: {achievement.description} (ID: {achievementId})");
+                        
+                        // Give reward
+                        GiveAchievementReward(achievement);
+                    }
+                }
+            }
+        }
+        
+        private void GiveAchievementReward(AchievementData.Achievement achievement)
+        {
+            switch (achievement.rewardType)
+            {
+                case AchievementData.RewardType.Coins:
+                    int currentCoins = PlayerPrefs.GetInt("Coins", 0);
+                    PlayerPrefs.SetInt("Coins", currentCoins + achievement.coinReward);
+                    PlayerPrefs.Save();
+                    break;
+                    
+                case AchievementData.RewardType.Weapon:
+                    if (achievement.weaponPrefab != null)
+                    {
+                        string weaponId = achievement.weaponPrefab.name;
+                        PlayerPrefs.SetInt($"Weapon_{weaponId}_Unlocked", 1);
+                        PlayerPrefs.Save();
+                    }
+                    break;
+                    
+                case AchievementData.RewardType.Character:
+                    if (achievement.characterBlueprint != null)
+                    {
+                        string charId = achievement.characterBlueprint.name;
+                        PlayerPrefs.SetInt($"Character_{charId}_Unlocked", 1);
+                        PlayerPrefs.Save();
+                    }
+                    break;
+            }
         }
     }
 }

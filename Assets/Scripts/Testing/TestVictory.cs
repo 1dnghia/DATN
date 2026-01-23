@@ -15,11 +15,24 @@ namespace Vampire
             if (autoFindLevelManager && levelManager == null)
             {
                 levelManager = FindFirstObjectByType<LevelManager>();
+                
+                if (levelManager != null)
+                {
+                    Debug.Log("TestVictory: LevelManager found successfully.");
+                }
+                else
+                {
+                    Debug.LogWarning("TestVictory: Searching for LevelManager in scene...");
+                    // Try alternative method
+                    var allManagers = FindObjectsByType<LevelManager>(FindObjectsSortMode.None);
+                    Debug.Log($"Found {allManagers.Length} LevelManager(s) in scene.");
+                }
             }
 
             if (levelManager == null)
             {
                 Debug.LogError("TestVictory: LevelManager not found! Please assign it in the inspector.");
+                Debug.LogError("Make sure LevelManager GameObject exists and is active in the scene hierarchy.");
             }
         }
 

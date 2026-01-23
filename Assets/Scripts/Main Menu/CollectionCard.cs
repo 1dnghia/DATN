@@ -45,8 +45,9 @@ namespace Vampire
             Ability ability = weaponPrefab.GetComponent<Ability>();
             if (ability == null) return;
             
-            string weaponName = weaponPrefab.name;
-            string unlockKey = $"Weapon_{weaponName}_Used";
+            // Sử dụng ability.Name thay vì weaponPrefab.name để khớp với CollectionTracker
+            string abilityName = ability.Name;
+            string unlockKey = $"Weapon_{abilityName}_Used";
             isUnlocked = PlayerPrefs.GetInt(unlockKey, 0) == 1;
             
             if (isUnlocked)
