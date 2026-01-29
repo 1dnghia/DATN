@@ -12,6 +12,9 @@ namespace Vampire
         protected Transform chestItemsParent;
         protected SpriteRenderer spriteRenderer;
         protected bool opened = false;
+        
+        public ChestBlueprint ChestBlueprint => chestBlueprint;
+        public bool IsOpened => opened;
 
         public void Init(EntityManager entityManager, Character playerCharacter, Transform chestItemsParent)
         {

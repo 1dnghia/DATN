@@ -13,7 +13,8 @@ namespace Vampire
         [SerializeField] private float monsterSpawnBufferDistance;  // Extra distance outside of the screen view at which monsters should be spawned
         [SerializeField] private float playerDirectionSpawnWeight;  // How much do we weight the player's movement direction in the spawning of monsters
         [Header("Chest Spawning Settings")]
-        [SerializeField] private  float chestSpawnRange = 5;
+        [SerializeField] private float chestSpawnRange = 5;
+        [SerializeField] private float maxChestDistance = 30f;  // Khoảng cách tối đa, nếu chest vượt quá sẽ respawn
         [Header("Object Pool Settings")]
         [SerializeField] private GameObject monsterPoolParent;
         private MonsterPool[] monsterPools;
@@ -116,6 +117,29 @@ namespace Vampire
             if (grid.CloseToEdge(playerCharacter))
             {
                 grid.Rebuild(playerCharacter.transform.position);
+            }
+            
+            // Check and respawn chests that are too far from player
+            CheckAndRespawnDistantChests();
+        }
+        
+        private void CheckAndRespawnDistantChests()
+        {
+            foreach (Chest chest in chests.ToList())
+            {
+                if (chest != null && !chest.IsOpened)
+                {
+                    float distance = Vector2.Distance(chest.transform.position, playerCharacter.transform.position);
+                    if (distance > maxChestDistance)
+                    {
+                        // Lưu blueprint để spawn lại
+                        ChestBlueprint blueprint = chest.ChestBlueprint;
+                        // Despawn chest cũ
+                        DespawnChest(chest);
+                        // Spawn chest mới ở vị trí gần player hơn
+                        SpawnChest(blueprint);
+                    }
+                }
             }
         }
 

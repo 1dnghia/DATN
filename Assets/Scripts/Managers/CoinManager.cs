@@ -39,16 +39,24 @@ namespace Vampire
             
             LoadCoins();
         }
-        
-        
-        private void LoadCoins()
+    
+    void OnDestroy()
+    {
+        if (instance == this)
         {
-            currentCoins = PlayerPrefs.GetInt(COIN_SAVE_KEY, 0);
-            OnCoinChanged?.Invoke(currentCoins);
+            instance = null;
         }
-        
-        
-        public void AddCoins(int amount)
+    }
+    
+    
+    private void LoadCoins()
+    {
+        currentCoins = PlayerPrefs.GetInt(COIN_SAVE_KEY, 0);
+        OnCoinChanged?.Invoke(currentCoins);
+    }
+    
+    
+    public void AddCoins(int amount)
         {
             if (amount <= 0) return;
             
